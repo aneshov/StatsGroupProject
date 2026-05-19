@@ -17,9 +17,9 @@
 
 | Name | GitHub username |
 |------|----------------|
-|      |                |
-|      |                |
-|      |                |
+|Aleksandar Neshov      |                |
+|Alexander Toropov      |                |
+|Marcus Ngyuen      |                |
 
 ## Repository Structure
 
