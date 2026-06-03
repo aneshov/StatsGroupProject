@@ -38,6 +38,8 @@ Dimensions:
 
 - 1632 rows
 
+- 10 columns
+
 ## Research Questions
 
 1.  How do monthly tourism patterns in Munich vary across the year, and where are the seasonal peaks and troughs?
