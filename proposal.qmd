@@ -387,15 +387,6 @@ Possible branches:
 | `analysis-plan`  | Analysis planning and methods        |
 | `final-report`   | Final report preparation             |
 
-Possible task division:
-
-| Task | Responsibility |
-|----|----|
-| Dataset description and research questions | Person 1 |
-| Initial data exploration and summary statistics | Person 2 |
-| Plots and visualisations | Person 3 |
-| Analysis plan, workflow section, and final Quarto formatting | Person 4 |
-
 Before merging into `main`, we will check that the Quarto document still renders correctly and that the code runs without errors.
 
 ### `.gitignore`
