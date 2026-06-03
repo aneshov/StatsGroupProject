@@ -1,0 +1,61 @@
+---
+title: "Project Proposal"
+format: html
+author:
+  - "Aleksandar Neshov"
+  - "Dinh Marcus Nguyen"
+  - "Alexander Toropov"
+date: today
+---
+
+## Dataset
+
+### Source
+
+<https://opendata.muenchen.de/dataset/monatszahlen-tourismus>
+
+### License
+
+Datenlizenz Deutschland Namensnennung 2.0 (dl-by-de)
+
+### Description
+
+The dataset contains monthly counts of guests and overnight stays in Munich, split by domestic and international visitors.
+
+The key variables are:
+
+- MONATSZAHL: metric type (guests or overnight stays) chr
+
+- AUSPRAEGUNG: visitor origin (domestic / international), chr
+
+- JAHR: year of observation, dbl
+
+- MONAT: month of observation, chr
+
+- WERT: the monthly count, dbl
+
+Dimensions:
+
+- 1632 rows
+
+## Research Questions
+
+1.  How do monthly tourism patterns in Munich vary across the year, and where are the seasonal peaks and troughs?
+
+2.  How did COVID-19 disrupt Munich tourism, and how quickly did different segments recover?
+
+## Initial EDA
+
+```{r}
+#| label: load-data
+library(tidyverse)
+library(here)
+
+# data <- read_csv(here("data", "raw", "data.csv"))
+```
+
+<!-- Add 2–3 exploratory plots and a brief commentary on what you observe. -->
+
+## Analysis Plan
+
+<!-- Outline the methods you plan to use to answer your research questions. -->
