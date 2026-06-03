@@ -26,15 +26,17 @@ date: today
 
 The dataset contains monthly counts of guests and overnight stays in Munich, split by domestic and international visitors.
 
+Each row represents one tourism observation for a specific combination of tourism measure (`MONATSZAHL`), visitor origin (`AUSPRAEGUNG`), year (`JAHR`), and month or yearly total (`MONAT`).
+
 ### Key variables
 
-| Variable      | Meaning                                          | Type |
-|---------------|--------------------------------------------------|------|
-| `MONATSZAHL`  | Metric type: guests or overnight stays           | chr  |
-| `AUSPRAEGUNG` | Visitor origin: domestic / international / total | chr  |
-| `JAHR`        | Year of observation                              | dbl  |
-| `MONAT`       | Month of observation                             | chr  |
-| `WERT`        | Monthly count                                    | dbl  |
+| Variable | Meaning | Type |
+|----|----|----|
+| `MONATSZAHL` | Metric type: guests or overnight stays | chr |
+| `AUSPRAEGUNG` | Visitor origin: domestic / international / total | chr |
+| `JAHR` | Year of observation | dbl |
+| `MONAT` | Month of observation, or `"Summe"` for yearly totals | chr |
+| `WERT` | Tourism value, either monthly value or yearly total depending on `MONAT` | dbl |
 
 ### Dimensions
 
@@ -42,6 +44,20 @@ The dataset contains monthly counts of guests and overnight stays in Munich, spl
 |-----------|------:|
 | Rows      | 1,632 |
 | Columns   |    10 |
+
+### Identification variable
+
+The dataset contains an `_id` column, which can be used as a row identifier.
+
+For the substantive tourism observations, each row can also be identified by the combination of:
+
+`MONATSZAHL + AUSPRAEGUNG + JAHR + MONAT`
+
+This combination describes the tourism measure, origin category, year, and month or yearly total for each observation.
+
+### Fit with project requirements
+
+The dataset meets the project requirements because it has more than 50 rows, a numeric outcome variable (`WERT`), a numeric explanatory variable (`JAHR`), and categorical explanatory variables (`MONATSZAHL` and `AUSPRAEGUNG`).
 
 ------------------------------------------------------------------------
 
@@ -92,8 +108,6 @@ Suitable presentation formats include:
 
 ```{r}
 library(tidyverse)
-library(janitor)
-library(skimr)
 
 tourism <- read_csv("data/raw/tourism.csv")
 ```
@@ -177,22 +191,23 @@ The distribution of `WERT` is strongly right-skewed. Most observations are much 
 
 ```{r}
 tourism %>%
+  filter(MONAT == "Summe") %>%
   filter(AUSPRAEGUNG %in% c("Inland", "Ausland")) %>%
-  group_by(JAHR, MONATSZAHL, AUSPRAEGUNG) %>%
-  summarise(total_wert = sum(WERT, na.rm = TRUE), .groups = "drop") %>%
-  ggplot(aes(x = JAHR, y = total_wert, color = AUSPRAEGUNG)) +
+  ggplot(aes(x = JAHR, y = WERT, color = AUSPRAEGUNG)) +
   geom_line() +
   geom_point() +
   facet_wrap(~ MONATSZAHL, scales = "free_y") +
   labs(
     title = "Tourism in Munich over time",
     x = "Year",
-    y = "Total tourism value",
+    y = "Yearly tourism value",
     color = "Origin category"
   )
 ```
 
 This plot gives a first overview of tourism trends over time. It compares domestic and international tourism and separates guests from overnight stays. The plot is relevant for our research questions about long-term trends and changes around the COVID-19 period.
+
+For this plot, only rows where `MONAT == "Summe"` are used, because these rows represent yearly totals. This avoids mixing monthly observations with yearly totals.
 
 ### Plot 3: Monthly pattern
 
@@ -350,15 +365,15 @@ styler::style_file("proposal.qmd")
 
 We plan to use the following R packages:
 
-| Package     | Purpose                                     |
-|-------------|---------------------------------------------|
+| Package | Purpose |
+|----|----|
 | `tidyverse` | Data cleaning, summaries, and visualisation |
-| `readr`     | Reading CSV files                           |
-| `dplyr`     | Data manipulation                           |
-| `ggplot2`   | Plots                                       |
-| `lubridate` | Date and month handling                     |
-| `janitor`   | Cleaning column names                       |
-| `broom`     | Tidying model outputs, if we use a model    |
+| `readr` | Reading CSV files |
+| `dplyr` | Data manipulation |
+| `ggplot2` | Plots |
+| `lubridate` | Date and month handling |
+| `janitor` | Cleaning column names and simple data cleaning in later project stages |
+| `broom` | Tidying model outputs, if we use a model |
 
 We may use `renv` to make the project reproducible across different computers:
 
