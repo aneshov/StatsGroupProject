@@ -42,9 +42,30 @@ Dimensions:
 
 ## Research Questions
 
-1.  How do monthly tourism patterns in Munich vary across the year, and where are the seasonal peaks and troughs?
+1.  How do monthly tourism patterns in Munich vary across the year, and which months show the highest     and lowest tourism activity?
 
-2.  How did COVID-19 disrupt Munich tourism, and how quickly did different segments recover?
+    Claim type: Descriptive / exploratory. We describe seasonal patterns and identify months with         high or low tourism activity.
+
+2.  How did Munich tourism change during the COVID-19 period, and how did domestic and international      tourism recover afterwards?
+
+    Claim type: Descriptive / exploratory. We describe visible changes during and after COVID-19,         without making strong causal claims.
+
+3.  How do domestic and international tourism differ in their long-term trends and seasonal patterns?
+
+    Claim type: Exploratory. We compare Inland and Ausland to see whether their trends and seasonal       patterns differ.
+
+## Context and target audience
+
+Our project is framed in a journalistic / public-interest context. We want to explore how tourism in Munich has changed over time, especially seasonal patterns, the COVID-19 period, and differences between domestic and international tourism.
+
+The target audience is a general audience interested in Munich, such as local residents, students, journalists, city administration, and tourism-related businesses. The analysis should therefore be understandable without advanced statistical knowledge.
+
+Suitable presentation formats are:
+- a short data report
+- a Quarto document with explanatory text and visualisations
+- line charts showing trends over time
+- seasonal plots comparing months
+- summary tables comparing domestic and international tourism
 
 ## Initial EDA
 
