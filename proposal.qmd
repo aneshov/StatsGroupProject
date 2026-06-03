@@ -338,8 +338,10 @@ Before merging into main, we will check that the Quarto document still renders c
 
 ### .gitignore
 
-We will exclude files that are machine-specific, temporary, or not needed in version control.
+Our `.gitignore` file was generated from the standard templates for R, Python, Windows, macOS, and Linux, and extended with Quarto-specific entries.
 
-Possible .gitignore entries:
+We exclude operating-system files such as `.DS_Store`, `Thumbs.db`, and Linux temporary files. We also exclude R session files such as `.Rhistory`, `.RData`, and `.Rproj.user/`, because they are user-specific and should not be shared through Git.
 
-.Rhistory .RData .Rproj.user/ .DS_Store .env *.html* .pdf
+For reproducibility and security, we exclude local environment files such as `.env`, `.Renviron`, virtual environments, cache folders, and temporary build files. Since the project uses Quarto, we also exclude generated Quarto folders and cache files such as `/.quarto/`, `/_site/`, `/*_files/`, and `/*_cache/`.
+
+Rendered output files and cached intermediate files should be regenerated from the Quarto source document instead of being manually tracked in Git.
