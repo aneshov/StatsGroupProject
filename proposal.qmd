@@ -1,6 +1,11 @@
 ---
 title: "Project Proposal"
-format: html
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
 author:
   - "Aleksandar Neshov"
   - "Dinh Marcus Nguyen"
@@ -10,54 +15,401 @@ date: today
 
 ## Dataset
 
-### Source
+### Source and license
 
-<https://opendata.muenchen.de/dataset/monatszahlen-tourismus>
-
-### License
-
-Datenlizenz Deutschland Namensnennung 2.0 (dl-by-de)
+| Item    | Information                                                   |
+|---------|---------------------------------------------------------------|
+| Source  | <https://opendata.muenchen.de/dataset/monatszahlen-tourismus> |
+| License | Datenlizenz Deutschland Namensnennung 2.0 (dl-by-de)          |
 
 ### Description
 
 The dataset contains monthly counts of guests and overnight stays in Munich, split by domestic and international visitors.
 
-The key variables are:
+Each row represents one tourism observation for a specific combination of tourism measure (`MONATSZAHL`), visitor origin (`AUSPRAEGUNG`), year (`JAHR`), and month or yearly total (`MONAT`).
 
-- MONATSZAHL: metric type (guests or overnight stays) chr
+### Key variables
 
-- AUSPRAEGUNG: visitor origin (domestic / international), chr
+| Variable | Meaning | Type |
+|----|----|----|
+| `MONATSZAHL` | Metric type: guests or overnight stays | chr |
+| `AUSPRAEGUNG` | Visitor origin: domestic / international / total | chr |
+| `JAHR` | Year of observation | dbl |
+| `MONAT` | Month of observation, or `"Summe"` for yearly totals | chr |
+| `WERT` | Tourism value, either monthly value or yearly total depending on `MONAT` | dbl |
 
-- JAHR: year of observation, dbl
+### Dimensions
 
-- MONAT: month of observation, chr
+| Dimension | Value |
+|-----------|------:|
+| Rows      | 1,632 |
+| Columns   |    10 |
 
-- WERT: the monthly count, dbl
+### Identification variable
 
-Dimensions:
+The dataset contains an `_id` column, which can be used as a row identifier.
 
-- 1632 rows
+For the substantive tourism observations, each row can also be identified by the combination of:
 
-- 10 columns
+`MONATSZAHL + AUSPRAEGUNG + JAHR + MONAT`
 
-## Research Questions
+This combination describes the tourism measure, origin category, year, and month or yearly total for each observation.
 
-1.  How do monthly tourism patterns in Munich vary across the year, and where are the seasonal peaks and troughs?
+### Fit with project requirements
 
-2.  How did COVID-19 disrupt Munich tourism, and how quickly did different segments recover?
+The dataset meets the project requirements because it has more than 50 rows, a numeric outcome variable (`WERT`), a numeric explanatory variable (`JAHR`), and categorical explanatory variables (`MONATSZAHL` and `AUSPRAEGUNG`).
+
+------------------------------------------------------------------------
+
+## Research questions
+
+### Research question 1
+
+**How do monthly tourism patterns in Munich vary across the year, and which months show the highest and lowest tourism activity?**
+
+**Claim type:** Descriptive / exploratory.\
+We describe seasonal patterns and identify months with high or low tourism activity.
+
+### Research question 2
+
+**How did Munich tourism change during the COVID-19 period, and how did domestic and international tourism recover afterwards?**
+
+**Claim type:** Descriptive / exploratory.\
+We describe visible changes during and after COVID-19, without making strong causal claims.
+
+### Research question 3
+
+**How do domestic and international tourism differ in their long-term trends and seasonal patterns?**
+
+**Claim type:** Exploratory.\
+We compare `Inland` and `Ausland` to see whether their trends and seasonal patterns differ.
+
+------------------------------------------------------------------------
+
+## Context and target audience
+
+Our project is framed in a **journalistic / public-interest context**. We want to explore how tourism in Munich has changed over time, especially seasonal patterns, the COVID-19 period, and differences between domestic and international tourism.
+
+The target audience is a general audience interested in Munich, such as local residents, students, journalists, city administration, and tourism-related businesses. The analysis should therefore be understandable without advanced statistical knowledge.
+
+Suitable presentation formats include:
+
+-   a short data report
+-   a Quarto document with explanatory text and visualisations
+-   line charts showing trends over time
+-   seasonal plots comparing months
+-   summary tables comparing domestic and international tourism
+
+------------------------------------------------------------------------
 
 ## Initial EDA
 
-```{r}
-#| label: load-data
-library(tidyverse)
-library(here)
+### Setup
 
-# data <- read_csv(here("data", "raw", "data.csv"))
+```{r}
+library(tidyverse)
+
+tourism <- read_csv("data/raw/tourism.csv")
 ```
 
-<!-- Add 2–3 exploratory plots and a brief commentary on what you observe. -->
+### Dataset structure
 
-## Analysis Plan
+```{r}
+glimpse(tourism)
+```
 
-<!-- Outline the methods you plan to use to answer your research questions. -->
+### Summary statistics for key variables
+
+```{r}
+tourism %>%
+  summarise(
+    rows = n(),
+    columns = ncol(tourism),
+    min_year = min(JAHR),
+    max_year = max(JAHR),
+    missing_wert = sum(is.na(WERT)),
+    min_wert = min(WERT, na.rm = TRUE),
+    median_wert = median(WERT, na.rm = TRUE),
+    mean_wert = mean(WERT, na.rm = TRUE),
+    max_wert = max(WERT, na.rm = TRUE)
+  )
+```
+
+The dataset contains 1,632 rows and 10 columns. The years range from 2006 to 2026. The main outcome variable `WERT` has 72 missing values. For non-missing values, `WERT` ranges from 4,785 to 19,689,217, with a median of 498,710 and a mean of about 1,014,664.
+
+### Category counts
+
+```{r}
+tourism %>%
+  count(MONATSZAHL)
+
+tourism %>%
+  count(AUSPRAEGUNG)
+```
+
+The variable `MONATSZAHL` contains two tourism measures: `Gäste` and `Übernachtungen`, each with 816 observations. The variable `AUSPRAEGUNG` contains three categories: `Ausland`, `Inland`, and `insgesamt`, each with 544 observations.
+
+Here, `insgesamt` means the total of domestic and international tourism.
+
+### Missing values
+
+```{r}
+tourism %>%
+  summarise(across(everything(), ~ sum(is.na(.))))
+```
+
+Important missing values already visible in the dataset:
+
+| Variable                         | Missing values |
+|----------------------------------|---------------:|
+| `WERT`                           |             72 |
+| `VERAEND_VORMONAT_PROZENT`       |            192 |
+| `VERAEND_VORJAHRESMONAT_PROZENT` |             72 |
+| `ZWOELF_MONATE_MITTELWERT`       |            192 |
+
+------------------------------------------------------------------------
+
+## Plots
+
+### Plot 1: Distribution of tourism values
+
+```{r}
+tourism %>%
+  ggplot(aes(x = WERT)) +
+  geom_histogram(bins = 30) +
+  scale_x_log10() +
+  labs(
+    title = "Distribution of tourism values",
+    x = "Tourism value WERT, log scale",
+    y = "Number of observations"
+  )
+```
+
+The distribution of `WERT` is strongly right-skewed. Most observations are much smaller than the largest values. The highest values likely come from yearly totals where `MONAT` is `"Summe"`, while regular monthly observations are lower. A log scale makes the distribution easier to inspect.
+
+### Plot 2: Tourism trend over time
+
+```{r}
+tourism %>%
+  filter(MONAT == "Summe") %>%
+  filter(AUSPRAEGUNG %in% c("Inland", "Ausland")) %>%
+  ggplot(aes(x = JAHR, y = WERT, color = AUSPRAEGUNG)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ MONATSZAHL, scales = "free_y") +
+  labs(
+    title = "Tourism in Munich over time",
+    x = "Year",
+    y = "Yearly tourism value",
+    color = "Origin category"
+  )
+```
+
+This plot gives a first overview of tourism trends over time. It compares domestic and international tourism and separates guests from overnight stays. The plot is relevant for our research questions about long-term trends and changes around the COVID-19 period.
+
+For this plot, only rows where `MONAT == "Summe"` are used, because these rows represent yearly totals. This avoids mixing monthly observations with yearly totals.
+
+### Plot 3: Monthly pattern
+
+```{r}
+tourism %>%
+  filter(MONAT != "Summe") %>%
+  filter(AUSPRAEGUNG %in% c("Inland", "Ausland")) %>%
+  mutate(
+    month = as.integer(str_sub(MONAT, 5, 6))
+  ) %>%
+  group_by(month, MONATSZAHL, AUSPRAEGUNG) %>%
+  summarise(mean_wert = mean(WERT, na.rm = TRUE), .groups = "drop") %>%
+  ggplot(aes(x = month, y = mean_wert, color = AUSPRAEGUNG)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ MONATSZAHL, scales = "free_y") +
+  scale_x_continuous(breaks = 1:12) +
+  labs(
+    title = "Average monthly tourism patterns in Munich",
+    x = "Month",
+    y = "Average tourism value",
+    color = "Origin category"
+  )
+```
+
+This plot helps us examine seasonal patterns. It shows average tourism values by month and compares domestic and international tourism. This is relevant for identifying months with particularly high or low tourism activity.
+
+------------------------------------------------------------------------
+
+## Notes on data quality issues
+
+Several data quality issues are already visible in the initial exploration.
+
+First, the variable `MONAT` contains both monthly values such as `"202401"` and yearly totals marked as `"Summe"`. These should not be mixed without care, because yearly totals are much larger than monthly observations.
+
+Second, `WERT` has 72 missing values. These missing values appear especially relevant for 2026, which is likely incomplete at the time of data publication.
+
+Third, the variables `VERAEND_VORMONAT_PROZENT` and `ZWOELF_MONATE_MITTELWERT` have more missing values than `WERT`. This is expected because percentage changes and moving averages cannot always be calculated for early or incomplete observations.
+
+Fourth, `AUSPRAEGUNG` includes `"insgesamt"`, which is the total of `"Inland"` and `"Ausland"`. Therefore, `"insgesamt"` should not be treated as an independent third group when comparing domestic and international tourism.
+
+Finally, `MONAT` is stored as a character variable. For seasonal analysis, we will likely need to extract the month number from values such as `"202401"`.
+
+------------------------------------------------------------------------
+
+## Analysis plan
+
+### Research question 1
+
+**Question:**\
+How do monthly tourism patterns in Munich vary across the year, and which months show the highest and lowest tourism activity?
+
+#### Variables used
+
+| Variable      | Meaning                                           |
+|---------------|---------------------------------------------------|
+| `WERT`        | Tourism value                                     |
+| `MONAT`       | Month / time variable                             |
+| `MONATSZAHL`  | Tourism measure: `Gäste` or `Übernachtungen`      |
+| `AUSPRAEGUNG` | Origin category: `Inland`, `Ausland`, `insgesamt` |
+
+#### Analytical approach
+
+We will use descriptive statistics and visualisations. We plan to calculate average tourism values for each month and compare seasonal patterns between `Gäste` and `Übernachtungen`. Line plots or bar charts by month are appropriate because the question focuses on seasonal patterns across the year.
+
+#### Cleaning / transformation steps
+
+We will need to extract the month number from `MONAT`, because values such as `202401` include both year and month. Rows where `MONAT = "Summe"` will need to be handled separately because they are yearly totals, not monthly observations. For this research question, we will likely exclude `"Summe"` rows.
+
+#### Uncertainties / risks
+
+The main risk is mixing monthly values with yearly totals. Another issue is that missing values, especially in incomplete years such as 2026, could distort average monthly patterns. We may need to exclude incomplete years or missing `WERT` values.
+
+------------------------------------------------------------------------
+
+### Research question 2
+
+**Question:**\
+How did Munich tourism change during the COVID-19 period, and how did domestic and international tourism recover afterwards?
+
+#### Variables used
+
+| Variable      | Meaning                          |
+|---------------|----------------------------------|
+| `WERT`        | Tourism value                    |
+| `JAHR`        | Year                             |
+| `MONATSZAHL`  | `Gäste` or `Übernachtungen`      |
+| `AUSPRAEGUNG` | `Inland`, `Ausland`, `insgesamt` |
+
+#### Analytical approach
+
+We will use time trend analysis with line plots and summary tables. We plan to compare tourism values before, during, and after the COVID-19 period. This can be done by comparing years such as pre-2020, 2020-2021, and post-2021. The approach is descriptive and exploratory, not fully causal.
+
+#### Cleaning / transformation steps
+
+We will need to decide whether to use monthly observations or yearly totals. For an annual trend analysis, we can either use `MONAT = "Summe"` or calculate yearly totals from monthly rows. We should not mix both. We will also need to handle missing values and possibly exclude 2026 because it is incomplete.
+
+#### Uncertainties / risks
+
+The main limitation is that the dataset alone cannot prove that COVID-19 caused the observed changes. It can only show changes during the COVID-19 period. Other factors, such as travel restrictions, economic conditions, or event cancellations, are not included as variables. International and domestic tourism may also be affected by different external factors.
+
+------------------------------------------------------------------------
+
+### Research question 3
+
+**Question:**\
+How do domestic and international tourism differ in their long-term trends and seasonal patterns?
+
+#### Variables used
+
+| Variable      | Meaning                      |
+|---------------|------------------------------|
+| `WERT`        | Tourism value                |
+| `JAHR`        | Year                         |
+| `MONAT`       | Month                        |
+| `AUSPRAEGUNG` | `Inland` and `Ausland`       |
+| `MONATSZAHL`  | `Gäste` and `Übernachtungen` |
+
+#### Analytical approach
+
+We will compare `Inland` and `Ausland` using grouped line plots, seasonal plots, and summary statistics. This allows us to see whether domestic and international tourism follow similar or different patterns over time and across months.
+
+#### Cleaning / transformation steps
+
+For this question, we will focus on `AUSPRAEGUNG = "Inland"` and `AUSPRAEGUNG = "Ausland"`. The category `"insgesamt"` should not be treated as an independent third group because it is the total of domestic and international tourism. We will also extract the month number from `MONAT` for seasonal analysis and handle missing `WERT` values.
+
+#### Uncertainties / risks
+
+The main risk is interpreting differences too strongly. The dataset shows patterns, but it does not include reasons for those patterns. For example, changes in international tourism could be related to travel restrictions, global economic conditions, flight availability, or major events in Munich, but these variables are not included in the dataset.
+
+------------------------------------------------------------------------
+
+## Workflow organisation
+
+### Code style
+
+We will follow the tidyverse style guide to keep the code readable and consistent.
+
+Main conventions:
+
+-   use `snake_case` for object and variable names
+-   use clear and meaningful names
+-   use the tidyverse pipe `%>%`
+-   keep code chunks short and focused
+-   add comments only where they explain non-obvious steps
+
+To enforce this, we will use a documented convention in the project README. We may also use `styler` to format code automatically:
+
+```{r, eval=FALSE}
+install.packages("styler")
+styler::style_file("proposal.qmd")
+```
+
+### Packages
+
+We plan to use the following R packages:
+
+| Package | Purpose |
+|----|----|
+| `tidyverse` | Data cleaning, summaries, and visualisation |
+| `readr` | Reading CSV files |
+| `dplyr` | Data manipulation |
+| `ggplot2` | Plots |
+| `lubridate` | Date and month handling |
+| `janitor` | Cleaning column names and simple data cleaning in later project stages |
+| `broom` | Tidying model outputs, if we use a model |
+
+We may use `renv` to make the project reproducible across different computers:
+
+```{r, eval=FALSE}
+install.packages("renv")
+renv::init()
+renv::snapshot()
+```
+
+This would lock the package versions used in the project.
+
+### Git workflow
+
+We will use a simple task-based Git workflow.
+
+The `main` branch will contain the stable version of the project. Each group member will work on a separate branch or on a task-specific branch.
+
+Possible branches:
+
+| Branch           | Purpose                              |
+|------------------|--------------------------------------|
+| `main`           | Stable project version               |
+| `proposal`       | Work on project proposal             |
+| `data-cleaning`  | Data cleaning scripts                |
+| `visualisations` | Plots and exploratory visualisations |
+| `analysis-plan`  | Analysis planning and methods        |
+| `final-report`   | Final report preparation             |
+
+Before merging into `main`, we will check that the Quarto document still renders correctly and that the code runs without errors.
+
+### `.gitignore`
+
+Our `.gitignore` file was generated from the standard templates for R, Python, Windows, macOS, and Linux, and extended with Quarto-specific entries.
+
+We exclude operating-system files such as `.DS_Store`, `Thumbs.db`, and Linux temporary files. We also exclude R session files such as `.Rhistory`, `.RData`, and `.Rproj.user/`, because they are user-specific and should not be shared through Git.
+
+For reproducibility and security, we exclude local environment files such as `.env`, `.Renviron`, virtual environments, cache folders, and temporary build files. Since the project uses Quarto, we also exclude generated Quarto folders and cache files such as `/.quarto/`, `/_site/`, `/*_files/`, and `/*_cache/`.
+
+Rendered output files and cached intermediate files should be regenerated from the Quarto source document instead of being manually tracked in Git.
