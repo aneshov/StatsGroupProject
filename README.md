@@ -4,8 +4,9 @@
 
 ## Research Questions
 
-1. <!-- Your first research question -->
-2. <!-- Your second research question -->
+1. How do monthly tourism patterns in Munich vary across the year, and which months show the highest and lowest tourism activity?
+2. How did Munich tourism change during the COVID-19 period, and how did domestic and international tourism recover afterwards?
+3. How do domestic and international tourism differ in their long-term trends and seasonal patterns?
 
 ## Dataset
 

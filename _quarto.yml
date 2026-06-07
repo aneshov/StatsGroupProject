@@ -1,0 +1,16 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "StatProg2 Group Project"
+  navbar:
+    left:
+      - href: proposal.qmd
+        text: Proposal
+
+format:
+  html:
+    toc: true
+    code-fold: true
+    theme: cosmo
