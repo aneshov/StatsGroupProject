@@ -1,0 +1,16 @@
+---
+title: "Group Reflection"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+author:
+  - "Aleksandar Neshov"
+  - "Dinh Marcus Nguyen"
+  - "Alexander Toropov"
+date: today
+---
+
+This is placeholder text for now

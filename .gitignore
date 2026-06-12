@@ -315,3 +315,5 @@ $RECYCLE.BIN/
 *.knit.md
 *.html
 
+
+**/*.quarto_ipynb

@@ -6,8 +6,13 @@ website:
   title: "StatProg2 Group Project"
   navbar:
     left:
+      - href: index.qmd
+        text: Home
       - href: proposal.qmd
         text: Proposal
+      - href: group_reflection.qmd
+        text: Group Reflection
+
 
 format:
   html:
