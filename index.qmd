@@ -1,0 +1,33 @@
+---
+title: "Homepage"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+author:
+  - "Aleksandar Neshov"
+  - "Dinh Marcus Nguyen"
+  - "Alexander Toropov"
+date: today
+---
+
+## About the project
+
+This website documents our StatProg2 group project. We use tourism data from Munich to explore patterns, trends, and insights in a clear and reproducible way.
+
+## Pages
+
+- [Proposal](proposal.qmd): project motivation, research question, and planned analysis.
+- [Group Reflection](group_reflection.qmd): a structured reflection on our dataset, analytical choices, collaboration, and skill development during the project.
+
+## Data
+
+Our project uses the Munich open data tourism dataset:
+
+- [Monatszahlen Tourismus](https://opendata.muenchen.de/dataset/monatszahlen-tourismus)
+
+## Goal
+
+The aim of the website is to present the project as a small **data story**: what question we ask, how we analyze the data, what we find and why the results matter.

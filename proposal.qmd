@@ -94,11 +94,11 @@ The target audience is a general audience interested in Munich, such as local re
 
 Suitable presentation formats include:
 
--   a short data report
--   a Quarto document with explanatory text and visualisations
--   line charts showing trends over time
--   seasonal plots comparing months
--   summary tables comparing domestic and international tourism
+- a short data report
+- a Quarto document with explanatory text and visualisations
+- line charts showing trends over time
+- seasonal plots comparing months
+- summary tables comparing domestic and international tourism
 
 ------------------------------------------------------------------------
 
@@ -348,11 +348,11 @@ We will follow the tidyverse style guide to keep the code readable and consisten
 
 Main conventions:
 
--   use `snake_case` for object and variable names
--   use clear and meaningful names
--   use the tidyverse pipe `%>%`
--   keep code chunks short and focused
--   add comments only where they explain non-obvious steps
+- use `snake_case` for object and variable names
+- use clear and meaningful names
+- use the tidyverse pipe `%>%`
+- keep code chunks short and focused
+- add comments only where they explain non-obvious steps
 
 To enforce this, we will use a documented convention in the project README. We may also use `styler` to format code automatically:
 
