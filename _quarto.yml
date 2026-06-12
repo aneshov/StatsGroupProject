@@ -1,6 +1,7 @@
 project:
   type: website
   output-dir: docs
+  execute-dir: project
 
 website:
   title: "StatProg2 Group Project"
@@ -8,9 +9,9 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: proposal.qmd
+      - href: pages/proposal.qmd
         text: Proposal
-      - href: group_reflection.qmd
+      - href: pages/group_reflection.qmd
         text: Group Reflection
 
 
