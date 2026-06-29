@@ -269,7 +269,7 @@ How do monthly tourism patterns in Munich vary across the year, and which months
 
 #### Analytical approach
 
-We will produce a seasonal line plot using `ggplot2` mapping the extracted month (1-12) to the x-axis and the average `WERT` to the y-axis, grouped and colored by `AUSPRAEGUNG`. This plot will directly answer our research question by visually identifying the peak and low seasons and showing if domestic and international tourists follow the same seasonal calendar. 
+We will produce a seasonal line plot using `ggplot2` mapping the extracted month (1-12) to the x-axis and the average `WERT` to the y-axis, grouped and colored by `AUSPRAEGUNG`. This plot will directly answer our research question by visually identifying the peak and low seasons and showing if domestic and international tourists follow the same seasonal calendar.
 
 #### Cleaning / transformation steps
 
@@ -301,7 +301,7 @@ We will produce a continuous time-series line plot with `ggplot2` mapping the `y
 
 #### Cleaning / transformation steps
 
-As with RQ1, we will filter out `"Summe"` rows and missing `WERT` rows, and filter out the `"insgesamt"` category to focus strictly on comparing domestic and international trends. 
+As with RQ1, we will filter out `"Summe"` rows and missing `WERT` rows, and filter out the `"insgesamt"` category to focus strictly on comparing domestic and international trends.
 
 #### Uncertainties / risks
 
