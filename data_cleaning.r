@@ -23,3 +23,11 @@ skim(dat_clean)
 # remove NA from dataset, no record yet of still on going year 2026
 dat_clean <- dat_clean %>%
   filter(!is.na(WERT))
+
+# create processed folder for cleaned dataset
+write_csv(dat_clean, "data/processed/tousrism_clean.csv")
+
+# save as RDS file for preserving exact column types without need of reformating for analysis
+saveRDS(dat_clean, "data/processed/tourism_clean.rds")
+
+# for loading: dat_clean <- readRDS("data/processed/tourism_clean.rds")
