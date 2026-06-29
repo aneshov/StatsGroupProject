@@ -12,7 +12,7 @@
 
 - **Source:** https://opendata.muenchen.de/dataset/monatszahlen-tourismus/resource/4f00274a-ef75-41e5-b5c1-15f22c9f8a12
 - **Licence:** Datenlizenz Deutschland Namensnennung 2.0 (dl-by-de)
-- **Description:** The dataset contains monthly counts of guests and overnight stays in Munich, split by domestic and international visitors. Homepage: https://aneshov.github.io/StatsGroupProject/
+- **Description:** The dataset contains monthly counts of guests and overnight stays in Munich, split by domestic and international visitors.
   
                     The key variables are:
 
