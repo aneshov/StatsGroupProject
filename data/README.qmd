@@ -1,0 +1,43 @@
+---
+title: "Data Documentation: Munich Monthly Tourism"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+author:
+  - "Aleksandar Neshov"
+  - "Dinh Marcus Nguyen"
+  - "Alexander Toropov"
+date: today
+---
+
+## Overview
+
+This dataset contains monthly aggregated counts of tourist arrivals ("Gäste") and overnight stays ("Übernachtungen") in Munich, Germany, recorded from 2006 to 2026. The data is split by domestic ("Inland") and international ("Ausland") visitors. It is provided by the City of Munich Open Data Portal under the Datenlizenz Deutschland – Namensnennung – Version 2.0 (dl-de/by-2-0) license.
+
+## Variable Dictionary
+
+| Variable | Type | Description |
+|------------------------|------------------------|------------------------|
+| `_id` | numeric | Unique row identifier |
+| `MONATSZAHL` | character | Type of tourism metric (`Gäste` = guest arrivals, `Übernachtungen` = overnight stays) |
+| `AUSPRAEGUNG` | character | Origin of the visitors (`Inland` = domestic, `Ausland` = international, `insgesamt` = total) |
+| `JAHR` | numeric | Year of observation |
+| `MONAT` | character | Month of observation in `YYYYMM` format, or `Summe` for annual totals |
+| `WERT` | numeric | The absolute count of tourists or stays for the given month/year |
+| `VORJAHRESWERT` | numeric | The count recorded in the exact same month of the previous year |
+| `VERAEND_VORMONAT_PROZENT` | numeric | Percentage change compared to the immediate previous month |
+| `VERAEND_VORJAHRESMONAT_PROZENT` | numeric | Percentage change compared to the same month in the previous year |
+| `ZWOELF_MONATE_MITTELWERT` | numeric | 12-month rolling average |
+
+## Documentation Gaps & Quality Notes
+
+During our data audit, we identified the following structural gaps in the official documentation:
+
+1\. **Mixed Time Formats:** The `MONAT` column mixes string-based months (`YYYYMM`) with annual aggregates (`Summe`), which requires explicit filtering before time-series analysis.
+
+2\. **Missing Codebook:** There is no official codebook explaining how the 12-month average (`ZWOELF_MONATE_MITTELWERT`) handles missing data boundaries.
+
+3\. **Future Structural Missingness:** The dataset includes placeholder rows for future, unrecorded months in the current year (e.g., late 2026), which appear as `NA` values in the `WERT` and percentage change columns.

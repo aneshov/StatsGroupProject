@@ -57,7 +57,7 @@ This combination describes the tourism measure, origin category, year, and month
 
 ### Fit with project requirements
 
-The dataset meets the project requirements because it has more than 50 rows, a numeric outcome variable (`WERT`), a numeric explanatory variable (`JAHR`), and categorical explanatory variables (`MONATSZAHL` and `AUSPRAEGUNG`).
+The dataset meets the project requirements because it has more than 50 rows, a numeric outcome variable (`WERT`), a numeric explanatory variable (`JAHR`), and categorical explanatory variables (`MONATSZAHL` and `AUSPRAEGUNG`). Furthermore, this dataset is particularly interesting for our questions because it provides high-resolution, monthly data perfectly spanning the pre-pandemic, lockdown, and post-pandemic recovery periods, allowing us to precisely visualize the localized impact of COVID-19 on Munich's tourism.
 
 ------------------------------------------------------------------------
 
@@ -70,6 +70,8 @@ The dataset meets the project requirements because it has more than 50 rows, a n
 **Claim type:** Descriptive / exploratory.\
 We describe seasonal patterns and identify months with high or low tourism activity.
 
+**Output:** We will produce a seasonal line plot to visualize the peak and low months for both domestic and international tourists.
+
 ### Research question 2
 
 **How did Munich tourism change during the COVID-19 period, and how did domestic and international tourism recover afterwards?**
@@ -77,12 +79,7 @@ We describe seasonal patterns and identify months with high or low tourism activ
 **Claim type:** Descriptive / exploratory.\
 We describe visible changes during and after COVID-19, without making strong causal claims.
 
-### Research question 3
-
-**How do domestic and international tourism differ in their long-term trends and seasonal patterns?**
-
-**Claim type:** Exploratory.\
-We compare `Inland` and `Ausland` to see whether their trends and seasonal patterns differ.
+**Output:** We will produce a continuous time-series line plot with reference lines marking the start and end of the pandemic to describe visible changes without making strong causal claims.
 
 ------------------------------------------------------------------------
 
@@ -244,10 +241,10 @@ Several data quality issues are already visible in the initial exploration.
 First, the variable `MONAT` contains both monthly values such as `"202401"` and yearly totals marked as `"Summe"`. These should not be mixed without care, because yearly totals are much larger than monthly observations.\
 We will filter out the "Summe" rows when doing monthly analysis, and use `tsibble::yearmonth()` with a format argument to parse the strings into a proper time-series index.
 
-Second, `WERT` has 72 missing values. These missing values appear especially relevant for 2026, which is likely incomplete at the time of data publication. \
+Second, `WERT` has 72 missing values. These missing values appear especially relevant for 2026, which is likely incomplete at the time of data publication.\
 We will filter out rows where `WERT` is `NA` prior to conducting our time-series analysis, effectively ending our dataset in December 2025.
 
-Third, the variables `VERAEND_VORMONAT_PROZENT` and `ZWOELF_MONATE_MITTELWERT` have more missing values than `WERT`. This is expected because percentage changes and moving averages cannot always be calculated for early or incomplete observations. \
+Third, the variables `VERAEND_VORMONAT_PROZENT` and `ZWOELF_MONATE_MITTELWERT` have more missing values than `WERT`. This is expected because percentage changes and moving averages cannot always be calculated for early or incomplete observations.\
 We must be careful to filter out "insgesamt" when grouping or comparing domestic and international tourism so we don't double-count visitors.
 
 Fourth, `AUSPRAEGUNG` includes `"insgesamt"`, which is the total of `"Inland"` and `"Ausland"`. Therefore, `"insgesamt"` should not be treated as an independent third group when comparing domestic and international tourism. While this looks like an error, domain knowledge confirms this is an accurate reflection of the post-COVID-19 rebound (comparing normal months to pandemic lockdown months). No cleaning is required, but we must be aware of this extreme volatility if modeling.
@@ -263,24 +260,24 @@ How do monthly tourism patterns in Munich vary across the year, and which months
 
 #### Variables used
 
-| Variable      | Meaning                                           |
-|---------------|---------------------------------------------------|
-| `WERT`        | Tourism value                                     |
-| `MONAT`       | Month / time variable                             |
-| `MONATSZAHL`  | Tourism measure: `Gäste` or `Übernachtungen`      |
-| `AUSPRAEGUNG` | Origin category: `Inland`, `Ausland`, `insgesamt` |
+| Variable      | Meaning                                             |
+|---------------|-----------------------------------------------------|
+| `WERT`        | Tourism value (outcome variable)                    |
+| `MONAT`       | Month / time variable (`yearmonth` object)          |
+| `MONATSZAHL`  | Tourism measure: (`Gäste` or `Übernachtungen`)      |
+| `AUSPRAEGUNG` | Origin category: (`Inland`, `Ausland`, `insgesamt`) |
 
 #### Analytical approach
 
-We will use descriptive statistics and visualisations. We plan to calculate average tourism values for each month and compare seasonal patterns between `Gäste` and `Übernachtungen`. Line plots or bar charts by month are appropriate because the question focuses on seasonal patterns across the year.
+We will produce a seasonal line plot using `ggplot2` mapping the extracted month (1-12) to the x-axis and the average `WERT` to the y-axis, grouped and colored by `AUSPRAEGUNG`. This plot will directly answer our research question by visually identifying the peak and low seasons and showing if domestic and international tourists follow the same seasonal calendar.
 
 #### Cleaning / transformation steps
 
-We will need to extract the month number from `MONAT`, because values such as `202401` include both year and month. Rows where `MONAT = "Summe"` will need to be handled separately because they are yearly totals, not monthly observations. For this research question, we will likely exclude `"Summe"` rows.
+We will use `dplyr::filter(MONAT != "Summe")` to remove annual totals and `filter(!is.na(WERT))` to drop the 72 missing, unrecorded values for 2026. We will convert `MONAT` to a `tsibble::yearmonth` object. Finally, we will use `lubridate::month()` to extract the numerical month from the `MONAT` object so we can aggregate the data across all years to find the average seasonal trend. We will filter out `AUSPRAEGUNG == "insgesamt"` to avoid double-counting.
 
 #### Uncertainties / risks
 
-The main risk is mixing monthly values with yearly totals. Another issue is that missing values, especially in incomplete years such as 2026, could distort average monthly patterns. We may need to exclude incomplete years or missing `WERT` values.
+Averaging data across all years (2006-2025) might obscure changing trends over time (e.g., if Oktoberfest became more popular recently than in 2006). The COVID-19 years (2020-2021) also heavily distort the "average" monthly values, so we may need to exclude pandemic years when calculating the typical seasonal baseline.
 
 ------------------------------------------------------------------------
 
@@ -291,53 +288,24 @@ How did Munich tourism change during the COVID-19 period, and how did domestic a
 
 #### Variables used
 
-| Variable      | Meaning                          |
-|---------------|----------------------------------|
-| `WERT`        | Tourism value                    |
-| `JAHR`        | Year                             |
-| `MONATSZAHL`  | `Gäste` or `Übernachtungen`      |
-| `AUSPRAEGUNG` | `Inland`, `Ausland`, `insgesamt` |
+| Variable      | Meaning                            |
+|---------------|------------------------------------|
+| `WERT`        | Tourism value (outcome variable)   |
+| `MONAT`       | Time variable (`yearmonth` object) |
+| `MONATSZAHL`  | `Gäste` or `Übernachtungen`        |
+| `AUSPRAEGUNG` | `Inland`, `Ausland`, `insgesamt`   |
 
 #### Analytical approach
 
-We will use time trend analysis with line plots and summary tables. We plan to compare tourism values before, during, and after the COVID-19 period. This can be done by comparing years such as pre-2020, 2020-2021, and post-2021. The approach is descriptive and exploratory, not fully causal.
+We will produce a continuous time-series line plot with `ggplot2` mapping the `yearmonth` `MONAT` to the x-axis and `WERT` to the y-axis, colored by `AUSPRAEGUNG`. We will add vertical reference lines (`geom_vline`) in March 2020 (start of lockdowns) and early 2022 (lifting of restrictions) to visually frame the pandemic period. This will answer the research question by showing the immediate drop and tracking the slope of the recovery curves for both visitor types.
 
 #### Cleaning / transformation steps
 
-We will need to decide whether to use monthly observations or yearly totals. For an annual trend analysis, we can either use `MONAT = "Summe"` or calculate yearly totals from monthly rows. We should not mix both. We will also need to handle missing values and possibly exclude 2026 because it is incomplete.
+As with RQ1, we will filter out `"Summe"` rows and missing `WERT` rows, and filter out the `"insgesamt"` category to focus strictly on comparing domestic and international trends.
 
 #### Uncertainties / risks
 
-The main limitation is that the dataset alone cannot prove that COVID-19 caused the observed changes. It can only show changes during the COVID-19 period. Other factors, such as travel restrictions, economic conditions, or event cancellations, are not included as variables. International and domestic tourism may also be affected by different external factors.
-
-------------------------------------------------------------------------
-
-### Research question 3
-
-**Question:**\
-How do domestic and international tourism differ in their long-term trends and seasonal patterns?
-
-#### Variables used
-
-| Variable      | Meaning                      |
-|---------------|------------------------------|
-| `WERT`        | Tourism value                |
-| `JAHR`        | Year                         |
-| `MONAT`       | Month                        |
-| `AUSPRAEGUNG` | `Inland` and `Ausland`       |
-| `MONATSZAHL`  | `Gäste` and `Übernachtungen` |
-
-#### Analytical approach
-
-We will compare `Inland` and `Ausland` using grouped line plots, seasonal plots, and summary statistics. This allows us to see whether domestic and international tourism follow similar or different patterns over time and across months.
-
-#### Cleaning / transformation steps
-
-For this question, we will focus on `AUSPRAEGUNG = "Inland"` and `AUSPRAEGUNG = "Ausland"`. The category `"insgesamt"` should not be treated as an independent third group because it is the total of domestic and international tourism. We will also extract the month number from `MONAT` for seasonal analysis and handle missing `WERT` values.
-
-#### Uncertainties / risks
-
-The main risk is interpreting differences too strongly. The dataset shows patterns, but it does not include reasons for those patterns. For example, changes in international tourism could be related to travel restrictions, global economic conditions, flight availability, or major events in Munich, but these variables are not included in the dataset.
+The main limitation is that the dataset alone cannot prove that COVID-19 caused the observed changes, though the timing is highly suggestive. Furthermore, comparing recovery rates between domestic and international tourism may be confounded by differing international border policies (e.g., travel bans) which are not captured in this dataset.
 
 ------------------------------------------------------------------------
 
