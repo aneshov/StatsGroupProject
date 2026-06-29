@@ -2,6 +2,7 @@ library(readr)
 library(dplyr)
 library(visdat)
 library(tsibble)
+library(skimr)
 
 dat <- read_csv("data/raw/tourism.csv")
 
@@ -16,3 +17,9 @@ dat_clean <- dat %>%
 # Convert to YYYYMM string to proper year-month object, using date wouldn't be accurate since we don't know when it was recorded
 dat_clean <- dat_clean %>%
   mutate(MONAT = yearmonth(as.character(MONAT), format = "%Y%m"))
+
+skim(dat_clean)
+
+# remove NA from dataset, no record yet of still on going year 2026
+dat_clean <- dat_clean %>%
+  filter(!is.na(WERT))

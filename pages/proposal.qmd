@@ -31,7 +31,7 @@ Each row represents one tourism observation for a specific combination of touris
 ### Key variables
 
 | Variable | Meaning | Type |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | `MONATSZAHL` | Metric type: guests or overnight stays | chr |
 | `AUSPRAEGUNG` | Visitor origin: domestic / international / total | chr |
 | `JAHR` | Year of observation | dbl |
@@ -241,15 +241,16 @@ This plot helps us examine seasonal patterns. It shows average tourism values by
 
 Several data quality issues are already visible in the initial exploration.
 
-First, the variable `MONAT` contains both monthly values such as `"202401"` and yearly totals marked as `"Summe"`. These should not be mixed without care, because yearly totals are much larger than monthly observations.
+First, the variable `MONAT` contains both monthly values such as `"202401"` and yearly totals marked as `"Summe"`. These should not be mixed without care, because yearly totals are much larger than monthly observations.\
+We will filter out the "Summe" rows when doing monthly analysis, and use `tsibble::yearmonth()` with a format argument to parse the strings into a proper time-series index.
 
-Second, `WERT` has 72 missing values. These missing values appear especially relevant for 2026, which is likely incomplete at the time of data publication.
+Second, `WERT` has 72 missing values. These missing values appear especially relevant for 2026, which is likely incomplete at the time of data publication. \
+We will filter out rows where `WERT` is `NA` prior to conducting our time-series analysis, effectively ending our dataset in December 2025.
 
-Third, the variables `VERAEND_VORMONAT_PROZENT` and `ZWOELF_MONATE_MITTELWERT` have more missing values than `WERT`. This is expected because percentage changes and moving averages cannot always be calculated for early or incomplete observations.
+Third, the variables `VERAEND_VORMONAT_PROZENT` and `ZWOELF_MONATE_MITTELWERT` have more missing values than `WERT`. This is expected because percentage changes and moving averages cannot always be calculated for early or incomplete observations. \
+We must be careful to filter out "insgesamt" when grouping or comparing domestic and international tourism so we don't double-count visitors.
 
-Fourth, `AUSPRAEGUNG` includes `"insgesamt"`, which is the total of `"Inland"` and `"Ausland"`. Therefore, `"insgesamt"` should not be treated as an independent third group when comparing domestic and international tourism.
-
-Finally, `MONAT` is stored as a character variable. For seasonal analysis, we will likely need to extract the month number from values such as `"202401"`.
+Fourth, `AUSPRAEGUNG` includes `"insgesamt"`, which is the total of `"Inland"` and `"Ausland"`. Therefore, `"insgesamt"` should not be treated as an independent third group when comparing domestic and international tourism. While this looks like an error, domain knowledge confirms this is an accurate reflection of the post-COVID-19 rebound (comparing normal months to pandemic lockdown months). No cleaning is required, but we must be aware of this extreme volatility if modeling.
 
 ------------------------------------------------------------------------
 
@@ -366,7 +367,7 @@ styler::style_file("proposal.qmd")
 We plan to use the following R packages:
 
 | Package | Purpose |
-|----|----|
+|------------------------------------|------------------------------------|
 | `tidyverse` | Data cleaning, summaries, and visualisation |
 | `readr` | Reading CSV files |
 | `dplyr` | Data manipulation |
