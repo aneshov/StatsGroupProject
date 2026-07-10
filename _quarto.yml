@@ -11,9 +11,12 @@ website:
         text: Home
       - href: pages/proposal.qmd
         text: Proposal
+      - href: pages/analysis.qmd
+        text: Analysis
       - href: pages/group_reflection.qmd
         text: Group Reflection
-
+      - href: pages/contributing.qmd
+        text: Contributing
 
 format:
   html:

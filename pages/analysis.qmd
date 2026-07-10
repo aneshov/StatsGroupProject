@@ -1,0 +1,20 @@
+---
+title: "Analysis"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+author:
+  - "Aleksandar Neshov"
+  - "Dinh Marcus Nguyen"
+  - "Alexander Toropov"
+date: today
+---
+
+## Placeholder Heading
+
+## Research Question 1
+
+## Research Question 2

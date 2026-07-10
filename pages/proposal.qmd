@@ -31,7 +31,7 @@ Each row represents one tourism observation for a specific combination of touris
 ### Key variables
 
 | Variable | Meaning | Type |
-|------------------------|------------------------|------------------------|
+|----|----|----|
 | `MONATSZAHL` | Metric type: guests or overnight stays | chr |
 | `AUSPRAEGUNG` | Visitor origin: domestic / international / total | chr |
 | `JAHR` | Year of observation | dbl |
@@ -335,7 +335,7 @@ styler::style_file("proposal.qmd")
 We plan to use the following R packages:
 
 | Package | Purpose |
-|------------------------------------|------------------------------------|
+|----|----|
 | `tidyverse` | Data cleaning, summaries, and visualisation |
 | `readr` | Reading CSV files |
 | `dplyr` | Data manipulation |
