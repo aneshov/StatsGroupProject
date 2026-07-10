@@ -20,7 +20,9 @@ This website documents our StatProg2 group project. We use tourism data from Mun
 ## Pages
 
 - [Proposal](pages/proposal.qmd): project motivation, research question, and planned analysis.
+- [Analysis](pages/analysis.qmd):
 - [Group Reflection](pages/group_reflection.qmd): a structured reflection on our dataset, analytical choices, collaboration, and skill development during the project.
+- [Contributing](pages/contributing.qmd):
 
 ## Data
 

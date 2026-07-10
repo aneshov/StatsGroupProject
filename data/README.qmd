@@ -20,7 +20,7 @@ This dataset contains monthly aggregated counts of tourist arrivals ("Gäste") a
 ## Variable Dictionary
 
 | Variable | Type | Description |
-|------------------------|------------------------|------------------------|
+|----|----|----|
 | `_id` | numeric | Unique row identifier |
 | `MONATSZAHL` | character | Type of tourism metric (`Gäste` = guest arrivals, `Übernachtungen` = overnight stays) |
 | `AUSPRAEGUNG` | character | Origin of the visitors (`Inland` = domestic, `Ausland` = international, `insgesamt` = total) |
