@@ -18,3 +18,13 @@ date: today
 ## Research Question 1
 
 ## Research Question 2
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+source("scripts/rq2_recovery_trend_plot.r")
+
+trend_lm
+```
