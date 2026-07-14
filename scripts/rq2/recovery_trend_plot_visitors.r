@@ -6,8 +6,35 @@ library(tsibble)
 
 source("scripts/load_data.r")
 
-# Select monthly total visitor arrivals from 2020 onward
+# Monthly domestic and international visitor arrivals
 visitor_recovery <- data %>%
+  filter(
+    MONATSZAHL == "Gäste",
+    AUSPRAEGUNG %in% c("Inland", "Ausland"),
+    JAHR >= 2020,
+    !is.na(WERT)
+  ) %>%
+  mutate(
+    date = as.Date(MONAT),
+    tourism_type = recode(
+      AUSPRAEGUNG,
+      "Inland" = "Domestic tourism",
+      "Ausland" = "International tourism"
+    ),
+    tourism_type = factor(
+      tourism_type,
+      levels = c("Domestic tourism", "International tourism")
+    ),
+    hover_actual = paste0(
+      "<b>", format(date, "%B %Y"), "</b>",
+      "<br>", tourism_type,
+      "<br>Visitor arrivals: ", comma(WERT)
+    )
+  ) %>%
+  arrange(date, tourism_type)
+
+# Combined monthly visitor arrivals: domestic + international
+visitor_total <- data %>%
   filter(
     MONATSZAHL == "Gäste",
     AUSPRAEGUNG == "insgesamt",
@@ -15,40 +42,46 @@ visitor_recovery <- data %>%
     !is.na(WERT)
   ) %>%
   mutate(
-    month_number = format(MONAT, "%m"),
-    date = as.Date(paste(JAHR, month_number, "01", sep = "-"))
+    date = as.Date(MONAT)
   ) %>%
-  arrange(date) %>%
-  mutate(
-    hover_actual = paste0(
-      "<b>", format(date, "%B %Y"), "</b>",
-      "<br>Visitor arrivals: ", comma(WERT)
-    )
-  )
+  arrange(date)
 
-# Linear trend
-visitor_model <- lm(WERT ~ as.numeric(date), data = visitor_recovery)
+# One linear model fitted to combined visitor arrivals
+combined_visitor_model <- lm(WERT ~ as.numeric(date), data = visitor_total)
 
-visitor_trend <- visitor_recovery %>%
+visitor_trend <- visitor_total %>%
   mutate(
-    fitted_value = predict(visitor_model),
+    fitted_value = predict(combined_visitor_model),
     hover_trend = paste0(
       "<b>", format(date, "%B %Y"), "</b>",
-      "<br>Linear trend: ", comma(round(fitted_value))
+      "<br>Combined total linear trend",
+      "<br>Fitted visitor arrivals: ", comma(round(fitted_value))
     )
   )
 
-p_visitors <- ggplot(visitor_recovery, aes(x = date, y = WERT)) +
+# Create chart
+p_visitors <- ggplot() +
   geom_line(
-    aes(group = 1, text = hover_actual),
-    colour = "#0065BD",
-    linewidth = 0.7,
-    alpha = 0.8
+    data = visitor_recovery,
+    aes(
+      x = date,
+      y = WERT,
+      colour = tourism_type,
+      group = tourism_type,
+      text = hover_actual
+    ),
+    linewidth = 0.8,
+    alpha = 0.85
   ) +
   geom_point(
-    aes(text = hover_actual),
-    colour = "#0065BD",
-    size = 2,
+    data = visitor_recovery,
+    aes(
+      x = date,
+      y = WERT,
+      colour = tourism_type,
+      text = hover_actual
+    ),
+    size = 1.8,
     alpha = 0.9
   ) +
   geom_line(
@@ -56,24 +89,41 @@ p_visitors <- ggplot(visitor_recovery, aes(x = date, y = WERT)) +
     aes(
       x = date,
       y = fitted_value,
-      colour = "Linear trend",
-      text = hover_trend,
-      group = 1
+      colour = "Combined linear trend",
+      group = 1,
+      text = hover_trend
     ),
-    linewidth = 1.2
+    linewidth = 1.1,
+    linetype = "dashed"
   ) +
-  scale_colour_manual(values = c("Linear trend" = "#F4A000")) +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  scale_colour_manual(
+    values = c(
+      "Domestic tourism" = "#0065BD",
+      "International tourism" = "#F4A000",
+      "Combined linear trend" = "#333333"
+    )
+  ) +
+  scale_x_date(
+    date_breaks = "1 year",
+    date_labels = "%Y"
+  ) +
   scale_y_continuous(
     labels = label_number(scale_cut = cut_short_scale())
   ) +
-  labs(x = NULL, y = NULL, colour = NULL) +
+  labs(
+    title = NULL,
+    x = NULL,
+    y = NULL,
+    colour = NULL
+  ) +
   theme_minimal(base_size = 14) +
   theme(
-    legend.position = "none",
+    legend.position = "right",
+    legend.title = element_blank(),
     panel.grid.minor = element_blank()
   )
 
+# Convert to interactive Plotly chart
 visitor_lm <- ggplotly(
   p_visitors,
   tooltip = "text",
@@ -81,14 +131,14 @@ visitor_lm <- ggplotly(
 ) %>%
   layout(
     title = list(
-      text = "Visitor Arrivals in Munich after COVID-19",
+      text = "Domestic and International Visitor Arrivals in Munich",
       x = 0.5,
       xanchor = "center",
       font = list(size = 22)
     ),
-
+    
     hovermode = "closest",
-
+    
     xaxis = list(
       title = "",
       type = "date",
@@ -104,13 +154,35 @@ visitor_lm <- ggplotly(
         )
       )
     ),
-
+    
     yaxis = list(
       title = "Visitor arrivals",
       tickformat = "~s"
     ),
-
-    margin = list(t = 85, b = 55, l = 80, r = 30)
+    
+    showlegend = TRUE,
+    
+    legend = list(
+      orientation = "v",
+      x = 0.02,
+      xanchor = "left",
+      y = 0.95,
+      yanchor = "top",
+      bgcolor = "rgba(255,255,255,0.88)",
+      bordercolor = "rgba(0,0,0,0.20)",
+      borderwidth = 1,
+      font = list(size = 11),
+      itemsizing = "constant",
+      itemclick = "toggle",
+      itemdoubleclick = "toggleothers"
+    ),
+    
+    margin = list(
+      t = 85,
+      b = 60,
+      l = 80,
+      r = 30
+    )
   ) %>%
   config(
     scrollZoom = TRUE,
@@ -119,55 +191,41 @@ visitor_lm <- ggplotly(
   ) %>%
   htmlwidgets::onRender(
     "
-  function(el, x, limits) {
+    function(el, x, limits) {
 
-    const minDate = new Date(limits[0]).getTime();
-    const maxDate = new Date(limits[1]).getTime();
-    let correcting = false;
+      const minDate = new Date(limits[0]).getTime();
+      const maxDate = new Date(limits[1]).getTime();
+      let correcting = false;
 
-    el.on('plotly_relayout', function(eventData) {
-      if (correcting) return;
+      el.on('plotly_relayout', function(eventData) {
+        if (correcting) return;
 
-      // Handles double-click / autorange actions
-      if (eventData['xaxis.autorange'] === true) {
-        correcting = true;
+        const startValue = eventData['xaxis.range[0]'];
+        const endValue = eventData['xaxis.range[1]'];
 
-        Plotly.relayout(el, {
-          'xaxis.range': limits,
-          'xaxis.autorange': false
-        }).then(function() {
-          correcting = false;
-        });
+        if (startValue === undefined || endValue === undefined) return;
 
-        return;
-      }
+        const start = new Date(startValue).getTime();
+        const end = new Date(endValue).getTime();
 
-      const startValue = eventData['xaxis.range[0]'];
-      const endValue = eventData['xaxis.range[1]'];
+        const newStart = Math.max(start, minDate);
+        const newEnd = Math.min(end, maxDate);
 
-      if (startValue === undefined || endValue === undefined) return;
+        if (newStart !== start || newEnd !== end) {
+          correcting = true;
 
-      const start = new Date(startValue).getTime();
-      const end = new Date(endValue).getTime();
-
-      const newStart = Math.max(start, minDate);
-      const newEnd = Math.min(end, maxDate);
-
-      if (newStart !== start || newEnd !== end) {
-        correcting = true;
-
-        Plotly.relayout(el, {
-          'xaxis.range': [
-            new Date(newStart).toISOString(),
-            new Date(newEnd).toISOString()
-          ],
-          'xaxis.autorange': false
-        }).then(function() {
-          correcting = false;
-        });
-      }
-    });
-  }
-  ",
+          Plotly.relayout(el, {
+            'xaxis.range': [
+              new Date(newStart).toISOString(),
+              new Date(newEnd).toISOString()
+            ]
+          }).then(function() {
+            correcting = false;
+          });
+        }
+      });
+    }
+    ",
     data = as.character(range(visitor_recovery$date))
   )
+
