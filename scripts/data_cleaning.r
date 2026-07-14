@@ -25,7 +25,7 @@ dat_clean <- dat_clean %>%
   filter(!is.na(WERT))
 
 # create processed folder for cleaned dataset
-write_csv(dat_clean, "data/processed/tousrism_clean.csv")
+write_csv(dat_clean, "data/processed/tourism_clean.csv")
 
 # save as RDS file for preserving exact column types without need of reformating for analysis
 saveRDS(dat_clean, "data/processed/tourism_clean.rds")
