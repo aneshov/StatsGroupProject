@@ -19,10 +19,10 @@ This website documents our StatProg2 group project. We use tourism data from Mun
 
 ## Pages
 
-- [Proposal](pages/proposal.qmd): project motivation, research question, and planned analysis.
-- [Analysis](pages/analysis.qmd):
-- [Group Reflection](pages/group_reflection.qmd): a structured reflection on our dataset, analytical choices, collaboration, and skill development during the project.
-- [Contributing](pages/contributing.qmd):
+- [Proposal](pages/proposal.qmd): introduces the project motivation, research questions, dataset, and planned analytical approach.
+- [Analysis](pages/analysis.qmd): presents the exploratory data analysis and interactive visualisations of Munich tourism, including COVID-19 recovery patterns in visitor arrivals and overnight stays.
+- [Group Reflection](pages/group_reflection.qmd): provides a structured reflection on the dataset, analytical choices, collaboration, and skills developed during the project.
+- [Contributing](pages/contributing.qmd): explains the team’s workflow, division of tasks, and contribution guidelines for the project.
 
 ## Data
 
