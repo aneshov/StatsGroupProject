@@ -19,12 +19,55 @@ date: today
 
 ## Research Question 2
 
+### Tourism recovery after COVID-19
+
+The COVID-19 pandemic sharply disrupted Munich’s tourism sector. To assess the recovery, this analysis uses two related monthly indicators from 2020 onward: **visitor arrivals** (*Gäste*) and **overnight stays** (*Übernachtungen*).
+
+Visitor arrivals count the guests checking into accommodation in Munich during a given month. Overnight stays count the total nights spent in accommodation by those guests. Reading both indicators together distinguishes changes in the number of visitors from changes in accommodation demand and possible changes in trip duration. Official tourism statistics commonly report arrivals, overnight stays, and average length of stay as related measures.
+
+#### Visitor arrivals
+
+The first chart shows monthly visitor arrivals. It captures the number of people coming to Munich rather than the number of nights they stay.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+source("scripts/rq2/recovery_trend_plot_visitors.r")
+
+visitor_lm
+```
+
+#### Overnight stays
+
+The second chart shows total monthly overnight stays. This is a measure of accommodation demand because a visitor staying for several nights contributes more than one overnight stay.
+
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
 
-source("scripts/rq2_recovery_trend_plot.r")
+source("scripts/rq2/recovery_trend_plot_overnight.r")
 
-trend_lm
+overnight_lm
 ```
+
+### Analytical interpretation
+
+The two indicators reveal three distinct phases of Munich’s post-COVID tourism recovery: collapse, reopening, and stabilisation.
+
+**First, the collapse was sudden and severe.** In January and February 2020, Munich recorded about 575,000 visitor arrivals per month. By April 2020, arrivals had fallen to roughly 295,000. Overnight stays declined even more sharply because travel restrictions affected both the number of guests and the ability to stay overnight. The lowest values occur during the first lockdown period, demonstrating that the initial shock was not a normal seasonal decline.
+
+**Second, recovery was delayed and uneven.** The series did not return immediately to pre-pandemic levels in 2021. Instead, both charts show a partial recovery during warmer months, followed by lower values in winter. This suggests that the return of tourism depended not only on seasonality but also on the gradual easing of travel restrictions and the restoration of domestic and international mobility.
+
+**Third, the recovery accelerated after 2022.** Total visitor arrivals increased from about 3.1 million in 2021 to 6.9 million in 2022 and 8.5 million in 2023. They reached approximately 9.3 million in both 2024 and 2025. This indicates that Munich’s visitor volume had largely recovered by 2024, although the annual total was still above the 2020–2021 pandemic level by a substantial margin. [file:229]
+
+The comparison between the two charts also matters. Visitor arrivals measure how many people came to Munich, while overnight stays measure the volume of accommodation consumed. When both series increase together, the recovery is broad-based: Munich is attracting more visitors and generating more hotel demand. If overnight stays rise faster than arrivals in a given period, that would suggest longer average trips. If arrivals rise faster, average trips may be shorter. This inference should be tested directly with an average-length-of-stay measure rather than assumed from the trend lines alone.
+
+The strong repeating pattern across years shows that seasonality remains important after the pandemic. Peaks tend to occur in the summer and early autumn, while lower values occur in winter. Therefore, a month-to-month decline—for example from summer to autumn—does not necessarily indicate weakening tourism. A more meaningful comparison is the same month in the previous year.
+
+Finally, the orange linear trend lines should be read cautiously. They summarise the overall upward direction since 2020, but they flatten a recovery that was clearly non-linear: an abrupt pandemic decline, a slow reopening, then a faster rebound. The line is useful for communicating the long-run direction, but the monthly observations provide the stronger evidence for the timing and unevenness of the recovery.
+
+### Key takeaway
+
+Munich tourism recovered strongly from the COVID-19 shock, with visitor arrivals reaching roughly 9.3 million in 2024 and remaining at a similar level in 2025. However, the monthly data show that this recovery was neither immediate nor smooth: it combined a sharp initial collapse, a gradual reopening phase, and persistent seasonal variation.
