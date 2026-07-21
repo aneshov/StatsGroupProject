@@ -27,7 +27,7 @@ The COVID-19 pandemic caused an abrupt disruption to Munich tourism. This sectio
 
 Visitor arrivals measure the number of guests checking into accommodation. Overnight stays measure the number of nights spent in accommodation. Considering both measures helps distinguish between changes in visitor volume and changes in accommodation demand.
 
-In the following charts, the blue line represents domestic tourism and the orange line represents international tourism. The dashed dark line is one linear model fitted to the combined total of domestic and international tourism. It summarises the overall direction of recovery, rather than the trend of either group individually.
+In the following charts, the blue line represents domestic tourism and the orange line represents international tourism. The dashed grey and black lines are linear models that respectively show the fitted trend in international and domestic visitor arrivals over time. They summarise the overall direction of recovery, rather than the trend of either group individually.
 
 #### Visitor arrivals
 
