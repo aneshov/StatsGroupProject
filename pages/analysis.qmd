@@ -13,9 +13,65 @@ author:
 date: today
 ---
 
-## Placeholder Heading
-
 ## Research Question 1
+
+**How do monthly tourism patterns in Munich vary across the year, and which months show the highest and lowest tourism activity?**
+
+This is a descriptive analysis of Munich's seasonal tourism cycle. Guest arrivals and overnight stays are examined separately because they measure different aspects of tourism: arrivals count the number of visitors checking into accommodation, while overnight stays measure the total number of nights spent there. Domestic and international tourism are also separated to determine whether both visitor groups follow the same seasonal calendar.
+
+The main description of the usual seasonal pattern excludes 2020 and 2021 because these exceptional years could shift the monthly averages away from normal conditions. The interactive plot still includes the COVID-only and all-years averages so that this decision can be assessed visually rather than simply hiding those observations.
+
+## Data preparation
+
+Three versions are calculated:
+
+- `seasonal_data` uses all available years
+- `seasonal_data_no_covid` excludes 2020 and 2021 and represents the usual seasonal baseline
+- `seasonal_data_only_covid` uses only 2020 and 2021
+
+## Interactive seasonal comparison
+
+The plot contains separate panels for guest arrivals and overnight stays because their values have different magnitudes. Each panel has six lines: domestic and international tourism for the three periods. The all-years lines show the overall averages, the non-COVID lines show the usual pattern, and the COVID-only lines show how strongly 2020 and 2021 differed from it.
+
+Hovering over a line reports the month, average value, and percentage difference from the corresponding non-COVID baseline. Legend entries can be clicked to hide lines, which makes it easier to compare only the periods or origins of interest.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+source("scripts/rq1/seasonal_comparison_plot.r")
+
+interactive_plot
+```
+
+## Highest and lowest months
+
+The exact highest and lowest months are calculated from `seasonal_data_no_covid`. Using the non-COVID data prevents the unusually low values in 2020 and 2021 from determining what is described as Munich's normal low season.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+source("scripts/rq1/seasonal_extremes_table.r")
+
+seasonal_extremes_table
+```
+
+## Analysis and answer
+
+Munich tourism follows a clear annual cycle. Activity is lowest in winter, increases through spring, and is strongest from summer into early autumn before declining again. The table gives the exact peak and low month for each series.
+
+International tourism is more seasonal than domestic tourism. International guest arrivals and overnight stays follow a similar pattern and both peak in September. Domestic tourism is spread more broadly across the high season: domestic overnight stays peak in July, while domestic guest arrivals peak in October. This difference shows that the month with the most arriving domestic visitors is not necessarily the month generating the most accommodation nights.
+
+The September–October peak also coincides with Oktoberfest, which is held in Munich from late September into early October. The event is therefore a plausible catalyst for increased tourism during these months, particularly for the September international peak and the October domestic-arrival peak. However, the dataset contains no event indicator, so this timing suggests an association rather than proving that Oktoberfest caused the peak.
+
+The COVID-only lines are substantially below the usual pattern, especially during spring and particularly for international tourism. Including 2020 and 2021 therefore lowers the all-years averages, although the overall seasonal shape remains visible. The non-COVID lines provide the clearest representation of Munich's usual seasonality.
+
+Overall, **January and February form Munich's main low season, while July through October form its high season**. September is the clearest international peak; domestic tourism has a broader and less synchronized peak.
+
+These results describe averages across many years. They may hide changes in seasonality over time, and the data identify when tourism is high or low but do not establish why those patterns occur.
 
 ## Research Question 2
 
