@@ -142,8 +142,8 @@ p <- ggplot() +
     values = c(
       "Domestic tourism" = "#0065BD",
       "International tourism" = "#F4A000",
-      "Domestic linear trend" = "#666666",
-      "International linear trend" = "#333333"
+      "Domestic linear trend" = "#333333",
+      "International linear trend" = "#666666"
     )
   ) +
   scale_x_date(
