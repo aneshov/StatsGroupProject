@@ -1,4 +1,4 @@
-# Project Title
+# Munich Tourism Through Time: Growth, Seasonality and Recovery after COVID-19
 
 This dataset contains monthly aggregated counts of tourist arrivals ("Gäste") and overnight stays ("Übernachtungen") in Munich, Germany, recorded from 2006 to 2026. The data is split by domestic ("Inland") and international ("Ausland") visitors
 
@@ -42,10 +42,12 @@ StatsGroupProject/               # files regarding the overall project
 │   └── workflows/               # GitHub Actions workflow to render and deploy the website
 ├── data/                        # Original and cleaned data used for analysis and visualisations
 │   ├── raw/                     
-│   ├── processed/               
+│   └── processed/               
 ├── pages/                       # qmd files for the website
 ├── renv/                        # Project-specific R package environment
-└── scripts/                     # scripts in R eg. data_cleaning etc.
+└── scripts/                     # scripts in R eg. data_cleaning, load_data, etc.
+    ├── rq1/                     # scripts for rq1 plots and table
+    └── rq2/                     # scripts for rq2 plots
 
 ```
 
