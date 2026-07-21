@@ -35,7 +35,7 @@ The plot contains separate panels for guest arrivals and overnight stays because
 
 Hovering over a line reports the month, average value, and percentage difference from the corresponding non-COVID baseline. Legend entries can be clicked to hide lines, which makes it easier to compare only the periods or origins of interest.
 
-```{r interactive-covid-comparison-rq1}
+```{r}
 #| echo: false
 #| warning: false
 #| message: false
@@ -49,7 +49,7 @@ interactive_plot
 
 The exact highest and lowest months are calculated from `seasonal_data_no_covid`. Using the non-COVID data prevents the unusually low values in 2020 and 2021 from determining what is described as Munich's normal low season.
 
-```{r highest-lowest-months-rq1}
+```{r}
 #| echo: false
 #| warning: false
 #| message: false

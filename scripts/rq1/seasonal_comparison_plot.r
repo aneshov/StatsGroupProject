@@ -1,7 +1,3 @@
-library(dplyr)
-library(ggplot2)
-library(plotly)
-
 source("scripts/rq1/prepare_seasonal_data.r")
 
 baseline_data <- seasonal_data_no_covid %>%

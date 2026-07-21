@@ -1,6 +1,3 @@
-library(dplyr)
-library(gt)
-
 source("scripts/rq1/prepare_seasonal_data.r")
 
 seasonal_extremes <- seasonal_data_no_covid %>%
