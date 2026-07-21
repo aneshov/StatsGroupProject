@@ -20,4 +20,12 @@ Completed the analysis for Research Question 1, including data preparation, visu
 
 ## Marcus
 
+- proposal base draft: description, research questions
+
+- proposal update & readme files
+
+- website + styling, GH: Actions, Pages, structure/management
+
+- data cleaning & research question 2: data preparation, visualization & analysis
+
 ## Alex
