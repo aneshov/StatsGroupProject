@@ -33,11 +33,11 @@ visitor_recovery <- data %>%
   ) %>%
   arrange(date, tourism_type)
 
-# Combined monthly visitor arrivals: domestic + international
-visitor_total <- data %>%
+# Monthly domestic visitor arrivals, used for ONE linear trend model
+visitor_domestic <- data %>%
   filter(
     MONATSZAHL == "Gäste",
-    AUSPRAEGUNG == "insgesamt",
+    AUSPRAEGUNG == "Inland",
     JAHR >= 2020,
     !is.na(WERT)
   ) %>%
@@ -46,15 +46,43 @@ visitor_total <- data %>%
   ) %>%
   arrange(date)
 
-# One linear model fitted to combined visitor arrivals
-combined_visitor_model <- lm(WERT ~ as.numeric(date), data = visitor_total)
-
-visitor_trend <- visitor_total %>%
+# Monthly international visitor arrivals, used for ONE linear trend model
+visitor_international <- data %>%
+  filter(
+    MONATSZAHL == "Gäste",
+    AUSPRAEGUNG == "Ausland",
+    JAHR >= 2020,
+    !is.na(WERT)
+  ) %>%
   mutate(
-    fitted_value = predict(combined_visitor_model),
+    date = as.Date(MONAT)
+  ) %>%
+  arrange(date)
+
+# Fit one model to domestic visitor arrivals
+domestic_visitor_model <- lm(WERT ~ as.numeric(date), data = visitor_domestic)
+
+visitor_domestic_trend <- visitor_domestic %>%
+  mutate(
+    tourism_type = "Domestic linear trend",
+    fitted_value = predict(domestic_visitor_model),
     hover_trend = paste0(
       "<b>", format(date, "%B %Y"), "</b>",
-      "<br>Combined total linear trend",
+      "<br>Domestic linear trend",
+      "<br>Fitted visitor arrivals: ", comma(round(fitted_value))
+    )
+  )
+
+# Fit one model to international visitor arrivals
+international_visitor_model <- lm(WERT ~ as.numeric(date), data = visitor_international)
+
+visitor_international_trend <- visitor_international %>%
+  mutate(
+    tourism_type = "International linear trend",
+    fitted_value = predict(international_visitor_model),
+    hover_trend = paste0(
+      "<b>", format(date, "%B %Y"), "</b>",
+      "<br>International linear trend",
       "<br>Fitted visitor arrivals: ", comma(round(fitted_value))
     )
   )
@@ -85,11 +113,23 @@ p_visitors <- ggplot() +
     alpha = 0.9
   ) +
   geom_line(
-    data = visitor_trend,
+    data = visitor_domestic_trend,
     aes(
       x = date,
       y = fitted_value,
-      colour = "Combined linear trend",
+      colour = tourism_type,
+      group = 1,
+      text = hover_trend
+    ),
+    linewidth = 1.1,
+    linetype = "dashed"
+  ) +
+  geom_line(
+    data = visitor_international_trend,
+    aes(
+      x = date,
+      y = fitted_value,
+      colour = tourism_type,
       group = 1,
       text = hover_trend
     ),
@@ -100,7 +140,8 @@ p_visitors <- ggplot() +
     values = c(
       "Domestic tourism" = "#0065BD",
       "International tourism" = "#F4A000",
-      "Combined linear trend" = "#333333"
+      "Domestic linear trend" = "#000000",
+      "International linear trend" = "#7A7A7A"
     )
   ) +
   scale_x_date(
@@ -228,4 +269,3 @@ visitor_lm <- ggplotly(
     ",
     data = as.character(range(visitor_recovery$date))
   )
-

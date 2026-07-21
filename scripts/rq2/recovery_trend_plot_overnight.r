@@ -33,11 +33,11 @@ tourism_recovery <- data %>%
   ) %>%
   arrange(date, tourism_type)
 
-# Combined monthly total, used for ONE linear trend model
-tourism_total <- data %>%
+# Monthly domestic overnight stays, used for ONE linear trend model
+tourism_domestic <- data %>%
   filter(
     MONATSZAHL == "Übernachtungen",
-    AUSPRAEGUNG == "insgesamt",
+    AUSPRAEGUNG == "Inland",
     JAHR >= 2020,
     !is.na(WERT)
   ) %>%
@@ -47,15 +47,44 @@ tourism_total <- data %>%
   ) %>%
   arrange(date)
 
-# Fit one model to total domestic + international overnight stays
-combined_model <- lm(WERT ~ as.numeric(date), data = tourism_total)
-
-trend_data <- tourism_total %>%
+# Monthly international overnight stays, used for ONE linear trend model
+tourism_international <- data %>%
+  filter(
+    MONATSZAHL == "Übernachtungen",
+    AUSPRAEGUNG == "Ausland",
+    JAHR >= 2020,
+    !is.na(WERT)
+  ) %>%
   mutate(
-    fitted_value = predict(combined_model),
+    month_number = format(MONAT, format = "%m"),
+    date = as.Date(paste(JAHR, month_number, "01", sep = "-"))
+  ) %>%
+  arrange(date)
+
+# Fit one model to domestic overnight stays
+domestic_model <- lm(WERT ~ as.numeric(date), data = tourism_domestic)
+
+domestic_trend_data <- tourism_domestic %>%
+  mutate(
+    tourism_type = "Domestic linear trend",
+    fitted_value = predict(domestic_model),
     hover_trend = paste0(
       "<b>", format(date, "%B %Y"), "</b>",
-      "<br>Combined total linear trend",
+      "<br>Domestic linear trend",
+      "<br>Fitted overnight stays: ", comma(round(fitted_value))
+    )
+  )
+
+# Fit one model to international overnight stays
+international_model <- lm(WERT ~ as.numeric(date), data = tourism_international)
+
+international_trend_data <- tourism_international %>%
+  mutate(
+    tourism_type = "International linear trend",
+    fitted_value = predict(international_model),
+    hover_trend = paste0(
+      "<b>", format(date, "%B %Y"), "</b>",
+      "<br>International linear trend",
       "<br>Fitted overnight stays: ", comma(round(fitted_value))
     )
   )
@@ -86,11 +115,23 @@ p <- ggplot() +
     alpha = 0.9
   ) +
   geom_line(
-    data = trend_data,
+    data = domestic_trend_data,
     aes(
       x = date,
       y = fitted_value,
-      colour = "Combined linear trend",
+      colour = tourism_type,
+      group = 1,
+      text = hover_trend
+    ),
+    linewidth = 1.1,
+    linetype = "dashed"
+  ) +
+  geom_line(
+    data = international_trend_data,
+    aes(
+      x = date,
+      y = fitted_value,
+      colour = tourism_type,
       group = 1,
       text = hover_trend
     ),
@@ -101,7 +142,8 @@ p <- ggplot() +
     values = c(
       "Domestic tourism" = "#0065BD",
       "International tourism" = "#F4A000",
-      "Combined linear trend" = "#333333"
+      "Domestic linear trend" = "#666666",
+      "International linear trend" = "#333333"
     )
   ) +
   scale_x_date(
