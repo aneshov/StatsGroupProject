@@ -21,20 +21,6 @@ This is a descriptive analysis of Munich's seasonal tourism cycle. Guest arrival
 
 The main description of the usual seasonal pattern excludes 2020 and 2021 because these exceptional years could shift the monthly averages away from normal conditions. The interactive plot still includes the COVID-only and all-years averages so that this decision can be assessed visually rather than simply hiding those observations.
 
-```{r setup-rq1}
-#| echo: false
-#| warning: false
-#| message: false
-
-library(dplyr)
-library(ggplot2)
-library(plotly)
-library(tsibble)
-library(gt)
-
-toursim_data <- readRDS("data/processed/tourism_clean.rds")
-```
-
 ## Data preparation
 
 Three versions are calculated:
@@ -43,30 +29,6 @@ Three versions are calculated:
 - `seasonal_data_no_covid` excludes 2020 and 2021 and represents the usual seasonal baseline
 - `seasonal_data_only_covid` uses only 2020 and 2021
 
-```{r prepare-seasonal-data-rq1}
-summarise_seasonal_data <- function(data) {
-  data %>%
-    filter(AUSPRAEGUNG %in% c("Inland", "Ausland")) %>%
-    mutate(month = as.integer(format(MONAT, format = "%m"))) %>%
-    group_by(month, MONATSZAHL, AUSPRAEGUNG) %>%
-    summarise(
-      mean_wert = mean(WERT, na.rm = TRUE),
-      .groups = "drop"
-    )
-}
-
-seasonal_data <- toursim_data %>%
-  summarise_seasonal_data()
-
-seasonal_data_no_covid <- toursim_data %>%
-  filter(!JAHR %in% c(2020, 2021)) %>%
-  summarise_seasonal_data()
-
-seasonal_data_only_covid <- toursim_data %>%
-  filter(JAHR %in% c(2020, 2021)) %>%
-  summarise_seasonal_data()
-```
-
 ## Interactive seasonal comparison
 
 The plot contains separate panels for guest arrivals and overnight stays because their values have different magnitudes. Each panel has six lines: domestic and international tourism for the three periods. The all-years lines show the overall averages, the non-COVID lines show the usual pattern, and the COVID-only lines show how strongly 2020 and 2021 differed from it.
@@ -74,146 +36,11 @@ The plot contains separate panels for guest arrivals and overnight stays because
 Hovering over a line reports the month, average value, and percentage difference from the corresponding non-COVID baseline. Legend entries can be clicked to hide lines, which makes it easier to compare only the periods or origins of interest.
 
 ```{r interactive-covid-comparison-rq1}
-baseline_data <- seasonal_data_no_covid %>%
-  select(
-    month,
-    MONATSZAHL,
-    AUSPRAEGUNG,
-    baseline_wert = mean_wert
-  )
+#| echo: false
+#| warning: false
+#| message: false
 
-plot_data <- bind_rows(
-  "All years" = seasonal_data,
-  "Without COVID-19" = seasonal_data_no_covid,
-  "COVID-19 only" = seasonal_data_only_covid,
-  .id = "period"
-) %>%
-  left_join(
-    baseline_data,
-    by = c("month", "MONATSZAHL", "AUSPRAEGUNG")
-  ) %>%
-  mutate(
-    period = factor(
-      period,
-      levels = c(
-        "All years",
-        "Without COVID-19",
-        "COVID-19 only"
-      )
-    ),
-    measure = factor(
-      recode(
-        MONATSZAHL,
-        "Gäste" = "Guests",
-        "Übernachtungen" = "Overnight stays"
-      ),
-      levels = c("Guests", "Overnight stays")
-    ),
-    origin = recode(
-      AUSPRAEGUNG,
-      "Inland" = "Domestic",
-      "Ausland" = "International"
-    ),
-    series = paste(origin, period, sep = " — "),
-    change_from_baseline = 100 * (mean_wert / baseline_wert - 1)
-  )
-
-covid_comparison_plot <- ggplot(
-  plot_data,
-  aes(
-    x = month,
-    y = mean_wert,
-    color = series,
-    group = series,
-    text = paste0(
-      "Measure: ", measure,
-      "<br>Origin: ", origin,
-      "<br>Period: ", period,
-      "<br>Month: ", month.name[month],
-      "<br>Average: ", scales::comma(round(mean_wert)),
-      "<br>Difference from non-COVID baseline: ",
-      scales::percent(change_from_baseline / 100, accuracy = 0.1)
-    )
-  )
-) +
-  geom_line(linewidth = 0.9) +
-  facet_wrap(
-    ~measure,
-    scales = "free_y",
-    ncol = 2
-  ) +
-  scale_x_continuous(
-    breaks = 1:12,
-    labels = month.abb,
-    expand = expansion(mult = c(0.01, 0.01))
-  ) +
-  scale_y_continuous(
-    labels = scales::label_number(big.mark = ",")
-  ) +
-  scale_color_manual(
-    values = c(
-      "International — All years" = "#4E79A7",
-      "International — Without COVID-19" = "#86BCDB",
-      "International — COVID-19 only" = "#2F5D8A",
-      "Domestic — All years" = "#F28E2B",
-      "Domestic — Without COVID-19" = "#FFBE7D",
-      "Domestic — COVID-19 only" = "#E86A17"
-    )
-  ) +
-  labs(
-    title = "Monthly tourism patterns in Munich",
-    subtitle = "Hover for details; click legend entries to hide or show series",
-    x = "Month",
-    y = "Average tourism activity",
-    color = "Origin and period"
-  ) +
-  theme_minimal(base_size = 10) +
-  theme(
-    panel.grid.minor = element_blank(),
-    strip.text = element_text(face = "bold", size = 10),
-    axis.title = element_text(size = 10),
-    axis.text = element_text(size = 8),
-    axis.text.x = element_text(size = 7, angle = 45, hjust = 1),
-    legend.position = "bottom",
-    legend.title = element_text(size = 9),
-    legend.text = element_text(size = 8),
-    plot.title = element_text(size = 13),
-    plot.subtitle = element_text(size = 9),
-    plot.title.position = "plot",
-    plot.margin = margin(8, 8, 8, 8),
-    panel.spacing.x = grid::unit(0.3, "lines")
-  )
-
-interactive_plot <- ggplotly(
-  covid_comparison_plot,
-  tooltip = "text",
-  dynamicTicks = FALSE,
-  height = 520
-)
-
-interactive_plot <- plotly::layout(
-  interactive_plot,
-  autosize = TRUE,
-  hovermode = "closest",
-  margin = list(l = 55, r = 10, b = 135, t = 70),
-  legend = list(
-    orientation = "h",
-    x = 0.5,
-    xanchor = "center",
-    y = -0.25,
-    yanchor = "top",
-    font = list(size = 10),
-    groupclick = "togglegroup",
-    itemclick = "toggle",
-    itemdoubleclick = "toggleothers"
-  )
-)
-
-interactive_plot <- plotly::config(
-  interactive_plot,
-  displaylogo = FALSE,
-  responsive = TRUE
-)
+source("scripts/rq1/seasonal_comparison_plot.r")
 
 interactive_plot
 ```
@@ -223,58 +50,13 @@ interactive_plot
 The exact highest and lowest months are calculated from `seasonal_data_no_covid`. Using the non-COVID data prevents the unusually low values in 2020 and 2021 from determining what is described as Munich's normal low season.
 
 ```{r highest-lowest-months-rq1}
-seasonal_extremes <- seasonal_data_no_covid %>%
-  group_by(MONATSZAHL, AUSPRAEGUNG) %>%
-  summarise(
-    highest_month = month.name[month[which.max(mean_wert)]],
-    highest_value = round(max(mean_wert)),
-    lowest_month = month.name[month[which.min(mean_wert)]],
-    lowest_value = round(min(mean_wert)),
-    .groups = "drop"
-  ) %>%
-  transmute(
-    measure = recode(
-      MONATSZAHL,
-      "Gäste" = "Guests",
-      "Übernachtungen" = "Overnight stays"
-    ),
-    origin = recode(
-      AUSPRAEGUNG,
-      "Inland" = "Domestic",
-      "Ausland" = "International"
-    ),
-    highest_month,
-    highest_value,
-    lowest_month,
-    lowest_value
-  )
+#| echo: false
+#| warning: false
+#| message: false
 
-seasonal_extremes %>%
-  gt() %>%
-  tab_header(
-    title = "Highest and lowest tourism months",
-    subtitle = "Monthly averages excluding 2020 and 2021"
-  ) %>%
-  cols_label(
-    measure = "Tourism measure",
-    origin = "Visitor origin",
-    highest_month = "Highest month",
-    highest_value = "Highest average",
-    lowest_month = "Lowest month",
-    lowest_value = "Lowest average"
-  ) %>%
-  fmt_number(
-    columns = c(highest_value, lowest_value),
-    decimals = 0,
-    use_seps = TRUE
-  ) %>%
-  tab_options(
-    table.font.size = px(14),
-    heading.title.font.size = px(18),
-    heading.subtitle.font.size = px(13),
-    column_labels.font.weight = "bold",
-    row.striping.include_table_body = TRUE
-  )
+source("scripts/rq1/seasonal_extremes_table.r")
+
+seasonal_extremes_table
 ```
 
 ## Analysis and answer
@@ -290,5 +72,3 @@ The COVID-only lines are substantially below the usual pattern, especially durin
 Overall, **January and February form Munich's main low season, while July through October form its high season**. September is the clearest international peak; domestic tourism has a broader and less synchronized peak.
 
 These results describe averages across many years. They may hide changes in seasonality over time, and the data identify when tourism is high or low but do not establish why those patterns occur.
-
-## Research Question 2
