@@ -1,4 +1,4 @@
-# Project Title
+# Statistical Analysis of Munich's Tourism
 
 This dataset contains monthly aggregated counts of tourist arrivals ("Gäste") and overnight stays ("Übernachtungen") in Munich, Germany, recorded from 2006 to 2026. The data is split by domestic ("Inland") and international ("Ausland") visitors
 
