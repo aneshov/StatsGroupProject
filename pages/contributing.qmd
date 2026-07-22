@@ -14,9 +14,12 @@ date: today
 ---
 
 ## Aleks
-Drafted the initial project proposal
-Conducted the first exploratory data analysis
-Completed the analysis for Research Question 1, including data preparation, visualisation, and written interpretation
+
+- Drafted the initial project proposal
+
+- Conducted the first exploratory data analysis
+
+- Completed the analysis for Research Question 1, including data preparation, visualisation, and written interpretation
 
 ## Marcus
 
@@ -29,3 +32,9 @@ Completed the analysis for Research Question 1, including data preparation, visu
 - data cleaning & research question 2: data preparation, visualization & analysis
 
 ## Alex
+
+- Updated the visualisation of the linear models in RQ2
+
+- Wrote the group reflection
+
+- Helped by discussing ideas that other group members implemented while they worked on them
