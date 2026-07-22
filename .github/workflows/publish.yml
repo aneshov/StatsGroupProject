@@ -41,6 +41,7 @@ jobs:
             any::ggplot2
             any::readr
             any::dplyr
+            any::plotly
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
