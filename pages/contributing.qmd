@@ -15,8 +15,9 @@ date: today
 
 ## Aleks
 
-Drafted the initial project proposal Conducted the first exploratory data analysis
-Completed the analysis for Research Question 1, including data preparation, visualisation, and written interpretation
+- Drafted the initial project proposal
+- Conducted the first exploratory data analysis
+- Completed the analysis for Research Question 1, including data preparation, visualisation, and written interpretation
 
 ## Marcus
 
