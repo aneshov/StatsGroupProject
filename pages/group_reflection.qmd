@@ -15,62 +15,61 @@ date: today
 
 ## Skills inventory
 
-For each skill area, describe what your group actually used it for.
-If you did not use a skill, say so and note why.
+For each skill area, describe what your group actually used it for. If you did not use a skill, say so and note why.
 
 ### Functions & refactoring (W2)
 
-*What we did:*
+*What we did: refactored repeatedly used code into reusable functions (example in the seasonal data preparation script for filtering and aggregating the tourism data)*
 
-*What worked well:*
+*What worked well: workflow became cleaner and easier to reuse in multiple scripts*
 
-*What was hard:*
+*What was hard: The functions had to stay flexible enough to work for different data subsets*
 
 ### Debugging (W3)
 
-*What we did:*
+*What we did: debugged data cleaning and plotting scripts,*
 
 *What worked well:*
 
-*What was hard:*
+*What was hard: Small issues in date formatting or filtering could affect later plots and models*
 
 ### Version control & remotes (W4)
 
-*What we did:*
+*What we did: We organized the project into separate scripts and prepared the code for collaborative work by using multiple branches, putting scripts in seperate documents and accessing them by embedding them in our pages.*
 
-*What worked well:*
+*What worked well: easier to track changes and work on different parts in parallel (working on RQ1 and RQ2 in seperate groups)*
 
 *What was hard:*
 
 ### Quarto websites & collaborative coding (W5)
 
-*What we did:*
+*What we did: We prepared the analysis for a shared report or website workflow, for example by keeping data preparation and visualization in separate scripts*
 
-*What worked well:*
+*What worked well: made it easier to reuse the same code in a Quarto document and collaborate on the project*
 
-*What was hard:*
+*What was hard: The scripts had to be written in a way that they could run both independently and inside a larger report*
 
 ### R packages (W6)
 
-*What we did:*
+*What we did:* packages for cleaning, plotting, time-series handling, and table output, for example dplyr for filtering and ggplot2 for the charts were used extensively
 
-*What worked well:*
+*What worked well: Enabled us to portray the data and handle the data in a competent and easier way*
 
-*What was hard:*
+*What was hard: Some tasks required several packages to work together smoothly, especially with dates and interactive plots*
 
 ### Initial data analysis & data cleaning (W7)
 
-*What we did:*
+*What we did: We cleaned the raw tourism data, for example by removing summary rows like “Summe” and filtering out missing values*
 
-*What worked well:*
+*What worked well: The processed data became directly usable for seasonal summaries and trend plots*
 
-*What was hard:*
+*What was hard: The monthly values had to be converted into a usable time format before analysis*
 
 ### Reproducibility, open data & renv (W9)
 
-*What we did:*
+*What we did: We saved the cleaned dataset and reused it through loading scripts, for example with the processed tourism RDS file*
 
-*What worked well:*
+*What worked well: made the workflow more reproducible and reduced repeated preprocessing*
 
 *What was hard:*
 
@@ -84,51 +83,69 @@ If you did not use a skill, say so and note why.
 
 ### Communication & visualisation (W11)
 
-*What we did:*
+*What we did: We created interactive plots and a seasonal comparison table, for example for domestic vs. international tourism patterns*
 
-*What worked well:*
+*What worked well: The visuals made the main differences and conclusions we took from the data easy to understand at a glance*
 
-*What was hard:*
+*What was hard: The charts had to stay readable even with multiple lines, trend lines, and interactive tooltips*
 
 ## Key analytical decisions
 
 Describe 2–3 decisions that had a meaningful effect on your results or workflow.
 
-### Decision 1: [short title]
+### Decision 1: \[short title\]
 
 *What were we deciding between?*
 
+\-
+
 *How did we reason through it?*
+
+\-
 
 *In hindsight, would we decide differently?*
 
-### Decision 2: [short title]
+\-
+
+### Decision 2: \[short title\]
 
 *What were we deciding between?*
 
+\-
+
 *How did we reason through it?*
 
+\-
+
 *In hindsight, would we decide differently?*
+
+\-
 
 ## Workflow & collaboration
 
 *How did we divide work across group members?*
 
+- We split the research questions and divided them between us three as we saw fit, the rest was accomplished by taking work when we each had the time to do them, without true seperation of tasks
+
 *What branching or Git workflow did we actually use — and did it match the proposal?*
 
+- 
+
 *What would we change about how we coordinated?*
+
+\-
 
 ## LLM usage
 
 Describe up to 5 significant uses of an LLM tool during the project.
 
-### Usage 1: [task]
+### Usage 1: \[task\]
 
 - **Tool / model:**
 - **What it produced:**
 - **What we had to correct or verify:**
 
-### Usage 2: [task]
+### Usage 2: \[task\]
 
 - **Tool / model:**
 - **What it produced:**
