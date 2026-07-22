@@ -18,28 +18,14 @@ Drafted the initial project proposal
 Conducted the first exploratory data analysis
 Completed the analysis for Research Question 1, including data preparation, visualisation, and written interpretation
 
-- Refactored the RQ1 scripts and fixed coding errors in the analysis pipeline
-
-- Repository maintenance (`.gitignore` updates and cleanup of system files)
-
 ## Marcus
 
-- Started the initial proposal draft (description and research questions)
+- proposal base draft: description, research questions
 
-- Renamed the dataset file and updated `.gitignore`
+- proposal update & readme files
 
-- Proposal updates, README updates, and data documentation (`data/README.qmd`)
+- website + styling, GH: Actions, Pages, structure/management
 
-- Set up the Quarto website structure, styling, homepage, and analysis page layout
-
-- Configured GitHub Actions and GitHub Pages publishing workflow
-
-- Set up the R environment with `renv` and project dependencies
-
-- Implemented the data cleaning pipeline and `load_data.r` script
-
-- Completed Research Question 2: data preparation, recovery trend visualisations, linear models (international, domestic, and combined), and written analysis
-
-- Ensured consistent plot styling across RQ2 trend lines
+- data cleaning & research question 2: data preparation, visualization & analysis
 
 ## Alex

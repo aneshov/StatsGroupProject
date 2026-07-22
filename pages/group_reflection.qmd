@@ -154,18 +154,34 @@ Describe 2–3 decisions that had a meaningful effect on your results or workflo
 
 ## LLM usage
 
-Describe up to 5 significant uses of an LLM tool during the project.
+Overall, we used Perplexity and GPT as support tools rather than as the main source of the project. They helped with early project setup, occasional coding, and improving the phrasing of text passages, but the analysis logic, data handling, workflows, and final scripts still had to be written, tested, and corrected by us. In all cases, we reviewed the output ourselves to make sure it matched what we had actually done and what the data showed. The project did not mainly rely on LLMs; they were useful assistance, but the core work remained our own.
 
-Overall, we used LLMs as a support tool rather than as the main source of the project. They helped us occasionally with coding, mainly for small suggestions, troubleshooting ideas, or checking alternative approaches, but the analysis logic, data handling, and final scripts still had to be written, tested, and corrected by us. We also used LLMs to improve the phrasing of text passages throughout the project, for example when drafting or polishing sections in the proposal, analysis, README, and reflection pages. In all cases, we reviewed and edited the output ourselves to make sure it matched what we had actually done and what the data showed. The project did not mainly rely on LLMs; they were useful assistance, but the core work remained our own.
+### Usage 1: Dataset requirements
 
-### Usage 1: Coding support
+- **Tool / model:** Perplexity/GPT
+- **What it produced:** help checking which of our chosen datasets met the project requirements
+- **What we had to correct or verify:** we compared the suggestions with our own checks and re-asked when an answer seemed wrong, to reduce the risk of hallucinated details
 
-- **Tool / model:** ChatGPT
+### Usage 2: GitHub Actions
+
+- **Tool / model:** Perplexity/GPT
+- **What it produced:** a starting workflow for publishing the site with GitHub Pages
+- **What we had to correct or verify:** we adjusted it so the workflow ran only on push or merge to `main`, and checked that the required R packages were included correctly
+
+### Usage 3: Packages
+
+- **Tool / model:** Perplexity/GPT
+- **What it produced:** suggestions for R packages suited to specific tasks
+- **What we had to correct or verify:** we checked whether each package actually fit the task by comparing options and testing what worked in our scripts
+
+### Usage 4: Coding support
+
+- **Tool / model:** GPT
 - **What it produced:** occasional suggestions for R code structure, debugging ideas, or wording of code comments
 - **What we had to correct or verify:** all suggested code still had to be tested in our scripts, adapted to our data, and checked against the actual outputs before we kept it
 
-### Usage 2: Text phrasing and editing
+### Usage 5: Text phrasing and editing
 
-- **Tool / model:** ChatGPT
-- **What it produced:** help with making written sections clearer or more readable
+- **Tool / model:** GPT
+- **What it produced:** help making written sections in the proposal, analysis, README, and reflection pages clearer or more readable
 - **What we had to correct or verify:** we checked that the final text still reflected our actual methods, results, and group decisions, and rewrote parts that were too generic or inaccurate
