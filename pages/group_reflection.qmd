@@ -19,134 +19,153 @@ For each skill area, describe what your group actually used it for. If you did n
 
 ### Functions & refactoring (W2)
 
-*What we did: refactored repeatedly used code into reusable functions (example in the seasonal data preparation script for filtering and aggregating the tourism data)*
+*What we did: refactored repeatedly used code into reusable functions (for example in the seasonal data preparation script for filtering and aggregating the tourism data, and in the shared `load_data.r` script used across RQ2 plots)*
 
-*What worked well: workflow became cleaner and easier to reuse in multiple scripts*
+*What worked well: the workflow became cleaner and easier to reuse in multiple scripts; the same seasonal summarisation logic could be applied to the all-years, non-COVID, and COVID-only datasets, and the processed data could be loaded consistently in both recovery-trend scripts*
 
-*What was hard: The functions had to stay flexible enough to work for different data subsets*
+*What was hard: the functions had to stay flexible enough to work for different data subsets and still run both independently and when sourced from Quarto pages*
 
 ### Debugging (W3)
 
-*What we did: debugged data cleaning and plotting scripts,*
+*What we did: debugged data cleaning and plotting scripts, including RQ1 coding errors, RQ2 plot issues, and problems with file naming and data loading*
 
-*What worked well:*
+*What worked well: separating data preparation from plotting made it easier to locate whether a bug came from the cleaned dataset, the filtering step, or the chart itself; saving the cleaned data as an RDS file also reduced repeated debugging of date parsing*
 
-*What was hard: Small issues in date formatting or filtering could affect later plots and models*
+*What was hard: small issues in date formatting or filtering could affect later plots and models; in RQ2, a mistaken file deletion and inconsistent script naming also caused avoidable rework*
 
 ### Version control & remotes (W4)
 
-*What we did: We organized the project into separate scripts and prepared the code for collaborative work by using multiple branches, putting scripts in seperate documents and accessing them by embedding them in our pages.*
+*What we did: we organized the project into separate scripts and prepared the code for collaborative work by using multiple branches, putting scripts in separate documents, and accessing them by embedding them in our pages; feature work was merged through pull requests for major parts such as the website setup, data cleaning, proposal update, and RQ1*
 
-*What worked well: easier to track changes and work on different parts in parallel (working on RQ1 and RQ2 in seperate groups)*
+*What worked well: easier to track changes and work on different parts in parallel (working on RQ1 and RQ2 in separate groups); GitHub also made it easier to follow changes across scripts and pages*
 
-*What was hard:*
+*What was hard: keeping branch work aligned with the shared website structure took coordination, especially when several people were editing `analysis.qmd` or the RQ2 scripts at different times*
 
 ### Quarto websites & collaborative coding (W5)
 
-*What we did: We prepared the analysis for a shared report or website workflow, for example by keeping data preparation and visualization in separate scripts*
+*What we did: we prepared the analysis for a shared report or website workflow, for example by keeping data preparation and visualization in separate scripts; we set up the Quarto site structure, styling, homepage, and GitHub Pages publishing workflow, and embedded the R scripts into the analysis page*
 
-*What worked well: made it easier to reuse the same code in a Quarto document and collaborate on the project*
+*What worked well: made it easier to reuse the same code in a Quarto document and collaborate on the project; updating the website became mostly a matter of editing `.qmd` pages and re-rendering rather than copying output manually*
 
-*What was hard: The scripts had to be written in a way that they could run both independently and inside a larger report*
+*What was hard: the scripts had to be written in a way that they could run both independently and inside a larger report; we also had to remove an intermediate `.rmarkdown` file once the Quarto workflow was working properly*
 
 ### R packages (W6)
 
-*What we did:* packages for cleaning, plotting, time-series handling, and table output, for example dplyr for filtering and ggplot2 for the charts were used extensively
+*What we did: packages for cleaning, plotting, time-series handling, and table output were used extensively; for example `dplyr` for filtering, `ggplot2` and `plotly` for the charts, `tsibble` for month handling, `gt` for tables, and `readr`/`visdat`/`skimr` during cleaning*
 
-*What worked well: Enabled us to portray the data and handle the data in a competent and easier way*
+*What worked well: enabled us to portray the data and handle the data in a competent and easier way; interactive plots were especially useful for comparing domestic and international patterns without overcrowding a static chart*
 
-*What was hard: Some tasks required several packages to work together smoothly, especially with dates and interactive plots*
+*What was hard: some tasks required several packages to work together smoothly, especially with dates and interactive plots; managing dependencies through `renv` helped, but package setup still needed attention at the start of the project*
 
 ### Initial data analysis & data cleaning (W7)
 
-*What we did: We cleaned the raw tourism data, for example by removing summary rows like “Summe” and filtering out missing values*
+*What we did: we cleaned the raw tourism data, for example by removing summary rows like “Summe”, filtering out missing values, and converting monthly values into a usable year-month format; we also added the raw dataset, documented it in the README, implemented the main cleaning pipeline, and saved the processed output*
 
-*What worked well: The processed data became directly usable for seasonal summaries and trend plots*
+*What worked well: the processed data became directly usable for seasonal summaries and trend plots; documenting the dataset in `data/README.qmd` and the main README made the variables easier to interpret for the rest of the analysis*
 
-*What was hard: The monthly values had to be converted into a usable time format before analysis*
+*What was hard: the monthly values had to be converted into a usable time format before analysis; we also had to decide how to treat incomplete or not-yet-recorded values such as ongoing 2026 observations*
 
 ### Reproducibility, open data & renv (W9)
 
-*What we did: We saved the cleaned dataset and reused it through loading scripts, for example with the processed tourism RDS file*
+*What we did: we saved the cleaned dataset and reused it through loading scripts, for example with the processed tourism RDS file and the shared `load_data.r` script; we also set up `renv` and the GitHub Actions workflow so the project could be reproduced and published from the repository*
 
-*What worked well: made the workflow more reproducible and reduced repeated preprocessing*
+*What worked well: made the workflow more reproducible and reduced repeated preprocessing; using open data from the Munich Open Data Portal also meant the raw source and licence could be linked directly in the README and website*
 
-*What was hard:*
+*What was hard: choosing between CSV and RDS required a small upfront decision, because CSV was easier to inspect manually but RDS preserved column types more reliably for repeated analysis*
 
 ### Modelling & analysis strategies (W10)
 
-*What we did:*
+*What we did: for RQ1, we used descriptive seasonal summaries rather than a formal predictive model, including separate domestic and international averages and a COVID/non-COVID comparison; for RQ2, we fitted linear trend models to summarise post-2020 recovery and later refined this by adding separate domestic and international linear models and updating the written interpretation*
 
-*What worked well:*
+*What worked well: the split between descriptive seasonality (RQ1) and trend-based recovery analysis (RQ2) matched the two research questions well; separating domestic and international series made the different recovery paths much clearer than looking only at totals*
 
-*What was hard:*
+*What was hard: the linear trends simplified a recovery that was not actually linear, so we had to explain carefully that the dashed trend lines summarise direction rather than capture the full pandemic shock and rebound*
 
 ### Communication & visualisation (W11)
 
-*What we did: We created interactive plots and a seasonal comparison table, for example for domestic vs. international tourism patterns*
+*What we did: we created interactive plots and a seasonal comparison table, for example for domestic vs. international tourism patterns; this included the RQ1 seasonal comparison plot and extremes table, the RQ2 recovery plots, and later refinements to the trend-line presentation and analysis wording*
 
-*What worked well: The visuals made the main differences and conclusions we took from the data easy to understand at a glance*
+*What worked well: the visuals made the main differences and conclusions we took from the data easy to understand at a glance; using consistent colours for the same trend across both RQ2 plots also made the report easier to read*
 
-*What was hard: The charts had to stay readable even with multiple lines, trend lines, and interactive tooltips*
+*What was hard: the charts had to stay readable even with multiple lines, trend lines, and interactive tooltips; balancing detail with clarity was especially difficult in the seasonal plot, where six lines were shown in each panel*
 
 ## Key analytical decisions
 
 Describe 2–3 decisions that had a meaningful effect on your results or workflow.
 
-### Decision 1: \[short title\]
+### Decision 1: Excluding 2020 and 2021 from the usual seasonal baseline
 
 *What were we deciding between?*
 
-\-
+- Using all available years for the main seasonal description, or excluding the COVID years so that 2020 and 2021 would not define Munich's normal high and low seasons
 
 *How did we reason through it?*
 
-\-
+- We compared all-years, non-COVID, and COVID-only seasonal averages in the interactive plot and used the non-COVID version for the main written answer and the highest/lowest-month table, because 2020 and 2021 were clearly exceptional and would pull the averages away from normal conditions
 
 *In hindsight, would we decide differently?*
 
-\-
+- Probably not for the main seasonal answer, because the COVID years really do distort what counts as a typical low season; keeping them visible in the plot still worked well as a sensitivity check
 
-### Decision 2: \[short title\]
+### Decision 2: Analysing domestic and international tourism separately
 
 *What were we deciding between?*
 
-\-
+- Reporting only total tourism, or separating domestic (*Inland*) and international (*Ausland*) visitors throughout the project
 
 *How did we reason through it?*
 
-\-
+- We separated the two groups in both research questions because the proposal and exploratory work suggested they follow different patterns; this became especially important in RQ2, where separate linear models and colour-coded domestic and international series made the recovery paths clearer than relying on one combined trend
 
 *In hindsight, would we decide differently?*
 
-\-
+- No; the split was one of the most informative parts of the project and would have hidden important differences if we had used totals only
+
+### Decision 3: Saving the cleaned dataset as RDS and loading it through shared scripts
+
+*What were we deciding between?*
+
+- Re-running the full cleaning pipeline inside every analysis script, or saving a processed dataset once and reusing it through `load_data.r`
+
+*How did we reason through it?*
+
+- We saved both CSV and RDS outputs during cleaning and used RDS in the analysis scripts because it preserved the year-month column type without repeated reformatting; this made the RQ1 and RQ2 scripts shorter and more consistent
+
+*In hindsight, would we decide differently?*
+
+- No; this was a practical reproducibility choice that saved time and reduced repeated errors, although keeping the CSV version was still useful for inspection
 
 ## Workflow & collaboration
 
 *How did we divide work across group members?*
 
-- We split the research questions and divided them between us three as we saw fit, the rest was accomplished by taking work when we each had the time to do them, without true seperation of tasks
+- We split the research questions between us and divided the main analysis work accordingly, with one focus on the seasonal RQ1 pipeline and another on the website infrastructure, data cleaning, and RQ2 recovery analysis
+- Smaller tasks were picked up flexibly as time allowed, without a strict separation for every page or script; this included refinements to the RQ2 plots and analysis text, README and documentation updates, and fixes to scripts after the first working versions were in place
 
 *What branching or Git workflow did we actually use — and did it match the proposal?*
 
-- 
+- We used feature branches and pull requests for the major project steps, including the website setup, package environment, data cleaning, proposal update, and RQ1 merge; day-to-day work was then continued on branches with smaller direct commits for fixes and refinements
+- This broadly matched the collaborative workflow described in the proposal, although not every small change went through a formal pull request
 
 *What would we change about how we coordinated?*
 
-\-
+- We would agree earlier on naming conventions for scripts and processed files, because inconsistent names created extra debugging work in RQ2
+- We would also schedule brief check-ins before large edits to the same pages, especially `analysis.qmd`, so that RQ1 and RQ2 changes could be integrated with fewer merge conflicts
 
 ## LLM usage
 
 Describe up to 5 significant uses of an LLM tool during the project.
 
-### Usage 1: \[task\]
+Overall, we used LLMs as a support tool rather than as the main source of the project. They helped us occasionally with coding, mainly for small suggestions, troubleshooting ideas, or checking alternative approaches, but the analysis logic, data handling, and final scripts still had to be written, tested, and corrected by us. We also used LLMs to improve the phrasing of text passages throughout the project, for example when drafting or polishing sections in the proposal, analysis, README, and reflection pages. In all cases, we reviewed and edited the output ourselves to make sure it matched what we had actually done and what the data showed. The project did not mainly rely on LLMs; they were useful assistance, but the core work remained our own.
 
-- **Tool / model:**
-- **What it produced:**
-- **What we had to correct or verify:**
+### Usage 1: Coding support
 
-### Usage 2: \[task\]
+- **Tool / model:** ChatGPT
+- **What it produced:** occasional suggestions for R code structure, debugging ideas, or wording of code comments
+- **What we had to correct or verify:** all suggested code still had to be tested in our scripts, adapted to our data, and checked against the actual outputs before we kept it
 
-- **Tool / model:**
-- **What it produced:**
-- **What we had to correct or verify:**
+### Usage 2: Text phrasing and editing
+
+- **Tool / model:** ChatGPT
+- **What it produced:** help with making written sections clearer or more readable
+- **What we had to correct or verify:** we checked that the final text still reflected our actual methods, results, and group decisions, and rewrote parts that were too generic or inaccurate
